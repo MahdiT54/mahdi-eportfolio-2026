@@ -1,10 +1,23 @@
 /**
-* This configuration file lets you run `$ sanity [command]` in this folder
-* Go to https://www.sanity.io/docs/cli to learn more.
-**/
-import { defineCliConfig } from 'sanity/cli'
+ * This configuration file lets you run `$ sanity [command]` in this folder
+ * Go to https://www.sanity.io/docs/cli to learn more.
+ **/
+import { defineCliConfig } from "sanity/cli";
 
-const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID
-const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 
-export default defineCliConfig({ api: { projectId, dataset } })
+export default defineCliConfig({
+  api: { projectId, dataset },
+  typegen: {
+    path: [
+      "./app/**/*.{ts,tsx,js,jsx}",
+      "./components/**/*.{ts,tsx,js,jsx}",
+      "./sanity/**/*.{ts,tsx,js,jsx}",
+      "./lib/**/*.{ts,tsx,js,jsx}",
+    ],
+    schema: "schema.json", // path to your schema file, generated with 'sanity schema extract' command
+    generates: "./sanity.types.ts", // path to the output file for generated type definitions
+    overloadClientMethods: true, // set to false to disable automatic overloading the sanity client
+  },
+});

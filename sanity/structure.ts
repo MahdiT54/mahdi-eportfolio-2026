@@ -15,7 +15,6 @@ import {
   TagIcon,
   UserIcon,
 } from "@sanity/icons";
-import type { StructureResolver } from "sanity/structure";
 
 // https://www.sanity.io/docs/structure-builder-cheat-sheet
 export const structure: StructureResolver = (S) =>

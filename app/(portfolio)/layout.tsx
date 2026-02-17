@@ -1,4 +1,4 @@
-import "./globals.css";
+import "../globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { SanityLive } from "@/sanity/lib/live";
 
