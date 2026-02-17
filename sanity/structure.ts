@@ -60,5 +60,116 @@ export const structure: StructureResolver = (S) =>
 
       S.divider(),
 
-      
+      S.listItem()
+        .title("Professional Background")
+        .icon(CaseIcon)
+        .child(
+          S.list()
+            .title("Professional Background")
+            .items([
+              S.listItem()
+                .title("Work Experience")
+                .icon(CaseIcon)
+                .schemaType("experience")
+                .child(
+                  S.documentTypeList("experience").title("Work Experience"),
+                ),
+
+              S.listItem()
+                .title("Education")
+                .icon(BookIcon)
+                .schemaType("education")
+                .child(S.documentTypeList("education").title("Education")),
+
+              S.listItem()
+                .title("Certifications")
+                .icon(DocumentIcon)
+                .schemaType("certification")
+                .child(
+                  S.documentTypeList("certification").title("Certifications"),
+                ),
+
+              S.listItem()
+                .title("Achievements & Awards")
+                .icon(StarIcon)
+                .schemaType("achievement")
+                .child(
+                  S.documentTypeList("achievement").title(
+                    "Achievements & Awards",
+                  ),
+                ),
+            ]),
+        ),
+
+      S.divider(),
+
+      S.listItem()
+        .title("Content & Community")
+        .icon(DocumentsIcon)
+        .child(
+          S.list()
+            .title("Content & Community")
+            .items([
+              S.listItem()
+                .title("Blog Posts")
+                .icon(ComposeIcon)
+                .schemaType("blog")
+                .child(S.documentTypeList("blog").title("Blog Posts")),
+
+              S.listItem()
+                .title("Testimonials")
+                .icon(CommentIcon)
+                .schemaType("testimonial")
+                .child(S.documentTypeList("testimonial").title("Testimonials")),
+            ]),
+        ),
+
+      S.divider(),
+
+      S.listItem()
+        .title("Contact Form Submissions")
+        .icon(InlineIcon)
+        .child(
+          S.list()
+            .title("Contact Form Submissions")
+            .items([
+              S.listItem()
+                .title("New Submissions")
+                .icon(InlineIcon)
+                .child(
+                  S.documentTypeList("contact")
+                    .title("New Submissions")
+                    .filter('_type == "contact" && status == "new"'),
+                ),
+
+              S.listItem()
+                .title("Archived")
+                .icon(InlineIcon)
+                .child(
+                  S.documentTypeList("contact")
+                    .title("Archived Submissions")
+                    .filter('_type == "contact" && status == "archived"'),
+                ),
+            ]),
+        ),
+
+      S.divider(),
+
+      S.listItem()
+        .title("Navigation Links")
+        .icon(DocumentsIcon)
+        .schemaType("navigation")
+        .child(S.documentTypeList("navigation").title("Navigation Links")),
+
+      S.divider(),
+
+      // Site Settings (Singleton)
+      S.listItem()
+        .title("Site Settings")
+        .icon(CogIcon)
+        .child(
+          S.document()
+            .schemaType("siteSettings")
+            .documentId("singleton-siteSettings"),
+        ),
     ]);
