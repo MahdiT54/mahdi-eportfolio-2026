@@ -26,30 +26,9 @@ async function HeroSection() {
     return null;
   }
 
-  const fullName = [profile.firstName, profile.lastName]
-    .filter((value): value is string => Boolean(value))
-    .join(" ");
-
-  const availabilityLabel =
-    profile.availability === "available"
-      ? "Available for projects"
-      : profile.availability === "open"
-        ? "Open to opportunities"
-        : profile.availability === "unavailable"
-          ? "Currently unavailable"
-          : null;
-
-  const socialLinks = profile.socialLinks
-    ? Object.entries(profile.socialLinks).filter(
-      (entry): entry is [string, string] =>
-        typeof entry[1] === "string" && entry[1].length > 0,
-    )
-    : [];
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden">
-      <BackgroundRippleEffect />
-
+    <section id="home" className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden">
+      <BackgroundRippleEffect/>
     </section>
   );
 }
