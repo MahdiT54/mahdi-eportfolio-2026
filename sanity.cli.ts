@@ -10,14 +10,9 @@ const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET;
 export default defineCliConfig({
   api: { projectId, dataset },
   typegen: {
-    path: [
-      "./app/**/*.{ts,tsx,js,jsx}",
-      "./components/**/*.{ts,tsx,js,jsx}",
-      "./sanity/**/*.{ts,tsx,js,jsx}",
-      "./lib/**/*.{ts,tsx,js,jsx}",
-    ],
-    schema: "schema.json", // path to your schema file, generated with 'sanity schema extract' command
-    generates: "./sanity.types.ts", // path to the output file for generated type definitions
-    overloadClientMethods: true, // set to false to disable automatic overloading the sanity client
+    path: "./{app,components,sanity,lib}/**/*.{ts,tsx,js,jsx}",
+    schema: "schema.json",
+    generates: "./sanity.types.ts",
+    overloadClientMethods: true,
   },
 });
