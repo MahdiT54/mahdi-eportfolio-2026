@@ -1,9 +1,7 @@
 import HeroSection from "./sections/HeroSection";
 
 async function PortfolioContent() {
-  return <>
-   <HeroSection />
-  </>;
+  return <HeroSection />;
 }
 
 export default PortfolioContent;
