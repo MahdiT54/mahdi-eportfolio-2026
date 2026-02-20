@@ -1,8 +1,8 @@
 import "../globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { SanityLive } from "@/sanity/lib/live";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SanityLive } from "@/sanity/lib/live";
 
 export default function RootLayout({
   children,

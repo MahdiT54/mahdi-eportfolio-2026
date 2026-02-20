@@ -41,10 +41,12 @@ export const LayoutTextFlip = ({
             animate={{
               y: 0,
               filter: "blur(0px)",
+              opacity: 1,
             }}
             exit={{ y: 50, filter: "blur(10px)", opacity: 0 }}
             transition={{
               duration: 0.5,
+              ease: "easeInOut",
             }}
             className={cn(
               "inline-block whitespace-nowrap font-semibold text-primary",
