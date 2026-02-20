@@ -4,6 +4,7 @@ import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SanityLive } from "@/sanity/lib/live";
 import SidebarToggle from "@/components/SidebarToggle";
+import Script from "next/script";
 
 export default function RootLayout({
   children,
@@ -13,7 +14,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body>
+        <body suppressHydrationWarning>
+          <Script
+            src="https://cdn.platform.openai.com/deployments/chatkit/chatkit.js"
+            strategy="afterInteractive"
+          />
           <SidebarProvider>
             <SidebarInset>{children}</SidebarInset>
 
