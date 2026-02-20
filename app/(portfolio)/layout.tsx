@@ -3,6 +3,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { AppSidebar } from "@/components/app-sidebar";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SanityLive } from "@/sanity/lib/live";
+import SidebarToggle from "@/components/SidebarToggle";
 
 export default function RootLayout({
   children,
@@ -18,8 +19,8 @@ export default function RootLayout({
 
             <AppSidebar side="right" />
 
-            {/* <FloatingDock />
-            <SidebarToggle /> */}
+            {/* <FloatingDock /> */}
+            <SidebarToggle />
 
             {/* Mode Toggle - Desktop: bottom right next to AI chat, Mobile: top right next to burger menu */}
             {/* <div className="fixed md:bottom-6 md:right-24 top-4 right-18 md:top-auto md:left-auto z-20">

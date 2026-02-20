@@ -4,7 +4,7 @@ import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect
 import { urlFor } from "@/sanity/lib/image";
 import { sanityFetch } from "@/sanity/lib/live";
 import { LayoutTextFlip } from "../ui/layout-text-flip";
-import { ProfileImage } from "../ui/ProfileImage";
+import { ProfileImage } from "../ProfileImage";
 
 const HERO_QUERY = defineQuery(`*[_id == "singleton-profile"][0]{
     firstName,
