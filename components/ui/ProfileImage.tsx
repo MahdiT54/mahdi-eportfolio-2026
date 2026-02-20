@@ -17,7 +17,7 @@ export function ProfileImage({
   lastName,
 }: ProfileImageProps) {
   const [isHovered, setIsHovered] = useState(false);
-    const { toggleSidebar, open } = useSidebar();
+  const { toggleSidebar, open } = useSidebar();
   const { isSignedIn } = useUser();
   const { openSignIn } = useClerk();
 

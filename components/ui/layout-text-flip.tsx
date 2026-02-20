@@ -25,25 +25,19 @@ export const LayoutTextFlip = ({
   }, [duration, words.length]);
 
   return (
-    <>
-      <span
-        className={cn("inline-flex flex-wrap items-center gap-2", className)}
-      ></span>
-      <motion.span
-        layoutId="subtext"
-        className="text-2xl font-bold tracking-tight drop-shadow-lg md:text-4xl"
-      >
+    <span className={cn("inline-flex flex-wrap items-center gap-2", className)}>
+      <motion.span layoutId="subtext" className="inline-block">
         {text}
       </motion.span>
 
       <motion.span
         layout
-        className="relative w-fit overflow-hidden rounded-md border border-transparent bg-white px-4 py-2 font-sans text-2xl font-bold tracking-tight text-black shadow-sm ring shadow-black/10 ring-black/10 drop-shadow-lg md:text-4xl dark:bg-neutral-900 dark:text-white dark:shadow-sm dark:ring-1 dark:shadow-white/10 dark:ring-white/10"
+        className="relative inline-block overflow-hidden rounded-lg border border-primary/20 bg-primary/10 px-3 py-1 backdrop-blur-sm"
       >
         <AnimatePresence mode="popLayout">
           <motion.span
             key={currentIndex}
-            initial={{ y: -40, filter: "blur(10px)" }}
+            initial={{ y: -40, filter: "blur(10px)", opacity: 0 }}
             animate={{
               y: 0,
               filter: "blur(0px)",
@@ -52,12 +46,14 @@ export const LayoutTextFlip = ({
             transition={{
               duration: 0.5,
             }}
-            className={cn("inline-block whitespace-nowrap")}
+            className={cn(
+              "inline-block whitespace-nowrap font-semibold text-primary",
+            )}
           >
             {words[currentIndex]}
           </motion.span>
         </AnimatePresence>
       </motion.span>
-    </>
+    </span>
   );
 };
