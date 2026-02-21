@@ -1,4 +1,3 @@
-import type { StructureResolver } from "sanity/structure";
 import {
   AsteriskIcon,
   BookIcon,
