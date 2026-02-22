@@ -1,209 +1,266 @@
-# Architecture Flow Map (One Page)
+# Architecture Flow Map
 
-This is the end-to-end implementation map for the current portfolio stack.
-
-## 1) Runtime Surfaces
-
-1. Public portfolio app: `app/(portfolio)/*`
-2. Sanity Studio CMS: `app/(sanity)/studio/[[...tool]]/*`
-3. API/server actions:
-   - `actions/create-session.ts` (ChatKit session)
-   - `actions/submit-contact-form.ts` (contact submission)
+> **Cross-references:** See `core-js-ts-next-sanity-clerk-chatkit-notes.md` for concept explanations.
+> See `feature-audit-checklist.md` to inspect and replicate each feature independently.
 
 ---
 
-## 2) Global App Shell (Portfolio)
+## Stack at a Glance
 
-Entry:
+| Layer | Technology | Role |
+|---|---|---|
+| Framework | Next.js 14 App Router | Routing, server components, server actions |
+| CMS | Sanity v3 | Content authoring, live reads, document writes |
+| Auth | Clerk | Sign-in, session, user identity |
+| AI Chat | OpenAI ChatKit | AI "twin" chat embedded in sidebar |
+| UI System | shadcn/ui + Tailwind v4 | Component primitives + design tokens |
+| Animation | Framer Motion + Aceternity | Visual flair on sections |
+| Hosting | (deployment target) | — |
 
-1. `app/(portfolio)/layout.tsx`
+> **Why App Router?** Server components allow each portfolio section to fetch its own CMS data without a client-side loading state. Client components are used only where interactivity is required.
 
-Global providers and services:
+---
 
-1. `ClerkProvider` (auth context)
-2. `ThemeProvider` (theme context for UI/client effects)
-3. `SidebarProvider` (chat sidebar state)
-4. `SanityLive` (live content updates)
-5. ChatKit script tag (client runtime dependency)
+## 1) Runtime Surfaces
 
-Layout slots:
+| Surface | Route | Description |
+|---|---|---|
+| Public portfolio | `app/(portfolio)/*` | Visitor-facing site |
+| Sanity Studio | `app/(sanity)/studio/[[...tool]]/*` | Author CMS UI (protected) |
+| Server actions | `actions/*.ts` | Backend logic without a dedicated API route |
 
-1. Main content via `SidebarInset`
-2. Right sidebar via `AppSidebar` (hosts AI chat)
-3. Floating chat trigger via `SidebarToggle`
+> **Why route groups?** `(portfolio)` and `(sanity)` are Next.js route groups — they share a segment in the filesystem but the parentheses are stripped from the URL. This lets the two apps have separate layouts without interfering with each other.
+
+---
+
+## 2) Global App Shell
+
+**Entry:** `app/(portfolio)/layout.tsx`
+
+```
+ClerkProvider                ← auth context for entire tree
+  ThemeProvider              ← light/dark/system theme
+    SidebarProvider          ← chat sidebar open/closed state
+      SanityLive             ← subscribes to live CMS updates
+        SidebarInset         ← main content slot
+        AppSidebar           ← right sidebar (hosts AI chat)
+        SidebarToggle        ← floating chat trigger button
+```
+
+> **Why nest providers this way?** Each provider only wraps what depends on it. `ClerkProvider` is outermost because auth state is needed by both chat and the sidebar toggle. `SanityLive` is a lightweight subscription component, not a heavy provider.
 
 ---
 
 ## 3) Portfolio Page Composition
 
-Request path:
+```
+app/(portfolio)/page.tsx          ← thin entry, delegates everything
+  PortfolioContent.tsx            ← orders sections
+    sections/HeroSection.tsx
+    sections/AboutSection.tsx
+    sections/ProjectsSection.tsx
+    sections/CertificationsSection.tsx
+    sections/TestimonialsSection.tsx
+    sections/ContactSection.tsx   ← includes ContactForm client component
+```
 
-1. `app/(portfolio)/page.tsx`
-2. `components/PortfolioContent.tsx`
-3. Ordered section render from `components/sections/*.tsx`
+**Section pattern (repeated for every section):**
 
-Section pattern:
+1. Server component defines typed GROQ query with `defineQuery`.
+2. Calls `sanityFetch(query)` — runs server-side, never exposes API tokens.
+3. Renders data as HTML, plus optional `"use client"` sub-components for animation.
 
-1. Server component defines GROQ query with `defineQuery`
-2. Fetches with `sanityFetch(...)` from `sanity/lib/live.ts`
-3. Renders content + optional client subcomponents (animations/interactions)
-
----
-
-## 4) Sanity Read Flow (CMS -> UI)
-
-Config and schema:
-
-1. Env contract: `sanity/env.ts`
-2. Studio config: `sanity.config.ts`
-3. Schemas: `sanity/schemaTypes/*`
-4. Studio nav structure: `sanity/structure.ts`
-
-Runtime read flow:
-
-1. Section server component runs GROQ query
-2. `sanityFetch` uses `defineLive(...)` with `client`
-3. Returned data is rendered server-side
-4. `SanityLive` keeps subscribed content fresh
-
-Images:
-
-1. `urlFor(...)` from `sanity/lib/image.ts`
-2. Remote host allowlist in `next.config.ts`
+> **Why keep the top-level page thin?** It makes section order easy to change in one place (`PortfolioContent`) and keeps each section independently testable.
 
 ---
 
-## 5) Sanity Studio Flow (Authoring)
+## 4) Sanity Read Flow
 
-Studio route:
+```
+Sanity dataset (cloud)
+  ↓
+section server component (GROQ query via defineQuery)
+  ↓
+sanityFetch() in sanity/lib/live.ts
+  ↓
+Server-rendered HTML → streamed to browser
+  ↑
+SanityLive component keeps subscribed content fresh (websocket)
+```
 
-1. `app/(sanity)/studio/[[...tool]]/page.tsx` -> `<NextStudio config={...} />`
+**Config chain:**
 
-Studio behavior:
+```
+sanity/env.ts          ← validates required env vars
+sanity.config.ts       ← studio config (projectId, dataset, schema, plugins)
+sanity/schemaTypes/*   ← document models
+sanity/structure.ts    ← studio navigation/grouping
+sanity/lib/client.ts   ← base read client
+sanity/lib/live.ts     ← wraps client with defineLive → exports sanityFetch + SanityLive
+sanity/lib/serverClient.ts ← write-capable client (server-only)
+sanity/lib/image.ts    ← urlFor() image URL builder
+```
 
-1. Uses schema registry in `sanity/schemaTypes/index.ts`
-2. Uses custom sidebar/document grouping in `sanity/structure.ts`
-3. Includes Vision plugin for GROQ validation
+**Images:** `urlFor(source).width(x).url()` → `cdn.sanity.io`. Remote host must be allowlisted in `next.config.ts`.
+
+---
+
+## 5) Sanity Studio Flow
+
+```
+app/(sanity)/studio/[[...tool]]/page.tsx
+  → <NextStudio config={sanityConfig} />
+      → loads schemaTypes/index.ts  (all registered document types)
+      → loads structure.ts          (custom nav, filtered views, singletons)
+      → Vision plugin               (live GROQ query runner for debugging)
+```
 
 ---
 
 ## 6) Clerk Auth Flow
 
-Middleware:
+```
+proxy.ts (Next middleware)
+  → clerkMiddleware()         ← runs on every matched route
+  → attaches auth state to request
 
-1. `proxy.ts` -> `clerkMiddleware()`
+ClerkProvider (layout.tsx)
+  → exposes auth context to all children
 
-Client gating:
-
-1. `components/SidebarToggle.tsx`: signed-in opens chat, signed-out opens sign-in modal
-2. `components/ProfileImage.tsx`: same gating on profile CTA
+UI gating:
+  SidebarToggle.tsx           ← signed-in → opens chat | signed-out → opens sign-in modal
+  ProfileImage.tsx            ← same pattern
 
 Server protection:
+  actions/create-session.ts
+    const { userId } = await auth()
+    if (!userId) throw                ← rejects unauthenticated requests
+```
 
-1. `actions/create-session.ts` calls `auth()`
-2. Rejects if no `userId`
+> **Why Clerk over NextAuth?** Clerk handles hosted UI (sign-in modal, user profile), session management, and server-side `auth()` with minimal setup. No database needed for users.
 
 ---
 
 ## 7) AI Chat Flow (OpenAI ChatKit)
 
-UI host:
+```
+User clicks SidebarToggle (must be signed in)
+  ↓
+AppSidebar mounts ChatWrapper
+  ↓
+ChatWrapper (server component)
+  → fetches profile data from Sanity  ← personalizes the AI system prompt
+  → renders Chat.tsx (client component)
+        ↓
+        ChatKit mounts, calls createSession()
+              ↓
+              actions/create-session.ts (server action)
+                → auth()                    ← validates Clerk session
+                → checks OPENAI_API_KEY     ← server-only env var
+                → checks CHATKIT_WORKFLOW_ID
+                → POST /v1/chatkit/sessions → OpenAI
+                → returns client_secret
+              ↓
+        ChatKit uses client_secret to start session
+```
 
-1. `components/app-sidebar.tsx` renders `ChatWrapper`
-2. `components/chat/ChatWrapper.tsx` fetches profile data from Sanity
-3. `components/chat/Chat.tsx` configures and mounts `ChatKit`
-
-Session bootstrap:
-
-1. ChatKit requests client secret via `createSession()`
-2. `actions/create-session.ts` validates:
-   - Clerk auth user
-   - `OPENAI_API_KEY`
-   - workflow ID env
-3. Server action calls `POST https://api.openai.com/v1/chatkit/sessions`
-4. Returns `client_secret` to ChatKit client
-
----
-
-## 8) Contact Form Write Flow (UI -> Server Action -> Sanity)
-
-Client:
-
-1. `components/sections/ContactForm.tsx`
-2. On submit, packages `FormData`
-3. Calls `submitContactForm(formData)`
-
-Server action:
-
-1. `actions/submit-contact-form.ts`
-2. Validates required fields
-3. Uses `serverClient.create(...)` with `_type: "contact"`
-
-CMS persistence and review:
-
-1. Schema: `sanity/schemaTypes/contact.ts` (status, notes, timestamps)
-2. Studio structure filters:
-   - New submissions
-   - Archived submissions
+> **Why a server action for the session?** The `OPENAI_API_KEY` must never reach the browser. The server action acts as a secure proxy — it validates the user, then exchanges credentials with OpenAI server-to-server.
 
 ---
 
-## 9) UI System Flow (shadcn + Tailwind + Motion)
+## 8) Contact Form Write Flow
 
-Design system foundation:
+```
+ContactForm.tsx (client component)
+  → user fills form, clicks submit
+  → event.preventDefault()
+  → packages FormData
+  → calls submitContactForm(formData) (server action)
+        ↓
+        actions/submit-contact-form.ts
+          → validates required fields
+          → serverClient.create({ _type: "contact", ...fields })
+                ↓
+                Sanity dataset stores contact document
+                  ↓
+                  Sanity Studio → structure.ts exposes filtered views:
+                    "New Submissions"
+                    "Archived Submissions"
+```
 
-1. `components.json` alias map + registry config
-2. `app/globals.css` tokens + Tailwind v4 imports
-3. `lib/utils.ts` (`cn`) + `cva` variants
+---
 
-Primitive and feature UI:
+## 9) UI System Flow
 
-1. Core primitives in `components/ui/*`
-2. Sidebar state machine in `components/ui/sidebar.tsx`
-3. Motion-heavy features:
-   - `components/ui/animated-testimonials.tsx`
-   - `components/ui/comet-card.tsx`
-   - `components/ui/world-map.tsx`
-   - `components/world-map-demo.tsx`
+```
+components.json          ← alias map (@/components/ui) + shadcn registry config
+app/globals.css          ← @theme inline (Tailwind v4 tokens) + :root CSS vars
+lib/utils.ts             ← cn() helper (clsx + tailwind-merge) + cva
+
+components/ui/*          ← shadcn primitives (Button, Input, Sheet, etc.)
+components/ui/sidebar.tsx ← full sidebar state machine (context, mobile/desktop, keyboard)
+
+Motion-heavy UI (Aceternity):
+  components/ui/animated-testimonials.tsx
+  components/ui/comet-card.tsx
+  components/ui/world-map.tsx
+  components/ui/background-ripple-effect.tsx
+  components/ui/layout-text-flip.tsx
+```
+
+> **Why shadcn over a component library?** shadcn copies source into your repo — you own the code, can customize freely, and aren't locked to a versioned package's decisions.
 
 ---
 
 ## 10) End-to-End Request Sequences
 
-### Sequence A: Portfolio page load
+### A — Portfolio page load
 
-1. Browser requests `/`
-2. Layout providers initialize
-3. `PortfolioContent` renders section tree
-4. Each section fetches Sanity content server-side
-5. HTML streams to client
-6. Client components hydrate (sidebar/chat triggers/animations)
+```
+Browser GET /
+  → Next.js matches app/(portfolio)/page.tsx
+  → Layout providers initialize (Clerk, Theme, Sidebar, SanityLive)
+  → PortfolioContent renders sections in order
+  → Each section runs its GROQ query server-side (no client waterfall)
+  → Streamed HTML reaches browser
+  → Client components hydrate (sidebar toggle, animations, chat trigger)
+```
 
-### Sequence B: Open AI chat (signed in)
+### B — Open AI chat (signed in)
 
-1. User clicks chat trigger
-2. Sidebar opens and mounts `ChatKit`
-3. ChatKit calls `createSession()` server action
-4. Server validates Clerk user and OpenAI config
-5. Server returns ChatKit client secret
-6. Chat session starts
+```
+User clicks SidebarToggle
+  → Sidebar opens
+  → ChatWrapper fetches Sanity profile (server)
+  → Chat.tsx mounts ChatKit (client)
+  → ChatKit calls createSession() server action
+  → Server: validate Clerk user + env → call OpenAI → return client_secret
+  → ChatKit initializes session with secret
+  → Chat is live
+```
 
-### Sequence C: Contact submit
+### C — Contact form submit
 
-1. User submits contact form
-2. Client sends `FormData` to server action
-3. Server validates and writes Sanity `contact` document
-4. Success/error message returned to UI
-5. Submission appears in Studio contact lists
+```
+User submits ContactForm
+  → FormData sent to submitContactForm server action
+  → Server validates fields
+  → serverClient.create({ _type: "contact" }) writes to Sanity
+  → Success/error returned to UI
+  → Document appears in Studio "New Submissions" view
+```
 
 ---
 
 ## 11) Replication Blueprint (Minimal Order)
 
-1. Build app shell + providers (`ClerkProvider`, theme, layout).
-2. Wire Sanity (env, studio route, schemas, client/live helpers).
-3. Build section pattern (server component + `defineQuery` + `sanityFetch`).
-4. Add sidebar state system and auth-gated chat entry points.
-5. Add ChatKit server session action and client chat surface.
-6. Add form server action pipeline to CMS document writes.
-7. Layer motion/visual components last.
+Build in this order to avoid dependency problems:
+
+1. **Shell** — Next.js + TypeScript + Tailwind v4 + shadcn aliases + `ClerkProvider` + basic layout.
+2. **Sanity read** — env vars, `sanity.config.ts`, schemas, studio route, `client.ts`, `live.ts`, `SanityLive`.
+3. **First section** — prove the `defineQuery` + `sanityFetch` + server component pattern works end-to-end.
+4. **Sidebar + auth gates** — `SidebarProvider`, `SidebarToggle`, Clerk middleware + sign-in modal.
+5. **ChatKit** — `create-session.ts` server action, `ChatWrapper`, `Chat.tsx`, mount in sidebar.
+6. **Contact form** — `ContactForm.tsx` client component, `submit-contact-form.ts`, `serverClient`, contact schema.
+7. **Remaining sections** — follow the same section pattern.
+8. **Motion/Aceternity** — layer in last so they don't block core functionality.
