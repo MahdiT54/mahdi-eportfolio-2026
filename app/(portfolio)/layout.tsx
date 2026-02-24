@@ -8,8 +8,11 @@ import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
 import { FloatingDock } from "@/components/FloatingDock";
 import { ModeToggle } from "@/components/DarkModeToggle";
+import { DisableDraftMode } from "@/components/DisableDraftMode";
+import { draftMode } from "next/headers";
+import { VisualEditing } from "next-sanity/visual-editing";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -44,6 +47,13 @@ export default function RootLayout({
               </div>
             </SidebarProvider>
             <SanityLive />
+
+            {(await draftMode()).isEnabled && (
+              <>
+                <VisualEditing />
+                <DisableDraftMode />
+              </>
+            )}
           </ThemeProvider>
         </body>
       </html>

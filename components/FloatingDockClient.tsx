@@ -73,7 +73,7 @@ export function FloatingDockClient({ navItems }: FloatingDockClientProps) {
     <>
       {/* Desktop: Horizontal dock - bottom left on md, bottom center on lg+ */}
       <div
-        className={`hidden md:block fixed z-30 transition-all duration-300 pointer-events-none group/dock ${
+        className={`hidden md:block fixed z-[60] transition-all duration-300 pointer-events-none group/dock ${
           isSidebarOpen
             ? "bottom-0 left-[calc(50%-var(--sidebar-width)/2)] -translate-x-1/2 pb-3"
             : "bottom-4 md:left-4 md:translate-x-0 lg:left-1/2 lg:-translate-x-1/2"
@@ -131,7 +131,7 @@ export function FloatingDockClient({ navItems }: FloatingDockClientProps) {
       </div>
 
       {/* Mobile: Hamburger menu button at top right */}
-      <div className="md:hidden fixed top-4 right-4 z-30">
+      <div className="md:hidden fixed top-4 right-4 z-[60]">
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
