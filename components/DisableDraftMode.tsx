@@ -3,8 +3,8 @@
 import { useRouter } from "next/navigation";
 import { useDraftModeEnvironment } from "next-sanity/hooks";
 import { useTransition } from "react";
-import { Button } from "./ui/button";
 import { disableDraftMode } from "@/actions/disableDraftMode";
+import { Button } from "./ui/button";
 
 export function DisableDraftMode() {
   const router = useRouter();

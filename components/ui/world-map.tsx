@@ -1,10 +1,9 @@
 "use client";
 
-import { useRef } from "react";
-import { motion } from "motion/react";
 import DottedMap from "dotted-map";
-
+import { motion } from "motion/react";
 import { useTheme } from "next-themes";
+import { useRef } from "react";
 
 interface MapProps {
   dots?: Array<{
@@ -39,7 +38,7 @@ export default function WorldMap({
 
   const createCurvedPath = (
     start: { x: number; y: number },
-    end: { x: number; y: number }
+    end: { x: number; y: number },
   ) => {
     const midX = (start.x + end.x) / 2;
     const midY = Math.min(start.y, end.y) - 50;

@@ -8,5 +8,4 @@ export const serverClient = createClient({
   apiVersion,
   useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
   token: process.env.SANITY_API_TOKEN,
-  
 });

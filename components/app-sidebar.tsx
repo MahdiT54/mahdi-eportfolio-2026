@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { Sidebar, SidebarContent, SidebarRail } from "./ui/sidebar";
-import ChatWrapper from "./chat/ChatWrapper";
 import { cn } from "@/lib/utils";
+import ChatWrapper from "./chat/ChatWrapper";
+import { Sidebar, SidebarContent, SidebarRail } from "./ui/sidebar";
 
 export function AppSidebar({
   className,

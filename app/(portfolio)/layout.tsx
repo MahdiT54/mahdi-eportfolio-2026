@@ -1,16 +1,16 @@
 import "../globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
-import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
-import { SanityLive } from "@/sanity/lib/live";
-import SidebarToggle from "@/components/SidebarToggle";
-import { ThemeProvider } from "@/components/theme-provider";
+import { draftMode } from "next/headers";
 import Script from "next/script";
-import { FloatingDock } from "@/components/FloatingDock";
+import { VisualEditing } from "next-sanity/visual-editing";
+import { AppSidebar } from "@/components/app-sidebar";
 import { ModeToggle } from "@/components/DarkModeToggle";
 import { DisableDraftMode } from "@/components/DisableDraftMode";
-import { draftMode } from "next/headers";
-import { VisualEditing } from "next-sanity/visual-editing";
+import { FloatingDock } from "@/components/FloatingDock";
+import SidebarToggle from "@/components/SidebarToggle";
+import { ThemeProvider } from "@/components/theme-provider";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { SanityLive } from "@/sanity/lib/live";
 
 export default async function RootLayout({
   children,
