@@ -6,6 +6,8 @@ import { SanityLive } from "@/sanity/lib/live";
 import SidebarToggle from "@/components/SidebarToggle";
 import { ThemeProvider } from "@/components/theme-provider";
 import Script from "next/script";
+import { FloatingDock } from "@/components/FloatingDock";
+import { ModeToggle } from "@/components/DarkModeToggle";
 
 export default function RootLayout({
   children,
@@ -31,15 +33,15 @@ export default function RootLayout({
 
               <AppSidebar side="right" />
 
-              {/* <FloatingDock /> */}
+              <FloatingDock />
               <SidebarToggle />
 
               {/* Mode Toggle - Desktop: bottom right next to AI chat, Mobile: top right next to burger menu */}
-              {/* <div className="fixed md:bottom-6 md:right-24 top-4 right-18 md:top-auto md:left-auto z-20">
+              <div className="fixed md:bottom-6 md:right-24 top-4 right-18 md:top-auto md:left-auto z-20">
                 <div className="w-10 h-10 md:w-12 md:h-12">
                   <ModeToggle />
                 </div>
-              </div> */}
+              </div>
             </SidebarProvider>
             <SanityLive />
           </ThemeProvider>
