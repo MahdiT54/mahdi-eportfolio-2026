@@ -35,9 +35,27 @@ export function SkillsChart({ skills }: SkillsChartProps) {
     groupedSkills.set(category, [...existing, skill]);
   }
 
+  const CATEGORY_ORDER = [
+    "frontend",
+    "backend",
+    "ai-ml",
+    "database",
+    "cloud",
+    "tools",
+    "other",
+  ];
+
+  const orderedGroups = Array.from(groupedSkills.entries()).sort(([a], [b]) => {
+    const ai = CATEGORY_ORDER.indexOf(a);
+    const bi = CATEGORY_ORDER.indexOf(b);
+    const aRank = ai === -1 ? Number.MAX_SAFE_INTEGER : ai;
+    const bRank = bi === -1 ? Number.MAX_SAFE_INTEGER : bi;
+    return aRank - bRank;
+  });
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {Array.from(groupedSkills.entries()).map(([category, categorySkills]) => {
+      {orderedGroups.map(([category, categorySkills]) => {
         if (!categorySkills || categorySkills.length === 0) return null;
 
         // Format category for display

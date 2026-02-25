@@ -11,6 +11,17 @@ import SidebarToggle from "@/components/SidebarToggle";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SanityLive } from "@/sanity/lib/live";
+import { Geist, Geist_Mono } from "next/font/google";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const GeistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
 
 export default async function RootLayout({
   children,
@@ -20,7 +31,9 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body suppressHydrationWarning>
+        <body 
+        className={`${geistSans.variable} ${GeistMono.variable} font-sans`}
+        suppressHydrationWarning>
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

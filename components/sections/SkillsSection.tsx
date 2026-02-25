@@ -3,7 +3,7 @@ import { sanityFetch } from "@/sanity/lib/live";
 import { SkillsChart } from "./SkillsChart";
 
 const SKILLS_QUERY =
-  defineQuery(`*[_type == "skill"] | order(category asc, order asc){
+  defineQuery(`*[_type == "skill" && !(category in ["soft-skills", "mobile", "testing", "devops", "design"])] | order(category asc, order asc){
   name,
   category,
   proficiency,
