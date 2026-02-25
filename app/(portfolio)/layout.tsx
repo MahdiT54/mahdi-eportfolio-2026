@@ -30,10 +30,9 @@ export default async function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
+      <html lang="en" suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${GeistMono.variable} font-sans`}
-          suppressHydrationWarning
         >
           <ThemeProvider
             attribute="class"

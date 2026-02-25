@@ -3,7 +3,7 @@
 import DottedMap from "dotted-map";
 import { motion } from "motion/react";
 import { useTheme } from "next-themes";
-import { useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type DotPoint = {
   lat: number;
@@ -32,10 +32,16 @@ export default function WorldMap({
   showLabels = false,
 }: MapProps) {
   const svgRef = useRef<SVGSVGElement>(null);
+  const [mounted, setMounted] = useState(false);
   const map = new DottedMap({ height: 100, grid: "diagonal" });
 
   const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isDark = mounted && resolvedTheme === "dark";
 
   const svgMap = map.getSVG({
     radius: 0.22,

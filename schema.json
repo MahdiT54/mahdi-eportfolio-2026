@@ -2794,6 +2794,10 @@
             },
             {
               "type": "string",
+              "value": "soft-skills"
+            },
+            {
+              "type": "string",
               "value": "other"
             }
           ]
