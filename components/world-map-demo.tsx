@@ -27,6 +27,10 @@ export default function WorldMapDemo() {
             },
             {
               start: { lat: 51.5074, lng: -0.1278 }, // London
+              end: { lat: 40.7128, lng: -74.006 }, // New York City
+            },
+            {
+              start: { lat: 40.7128, lng: -74.006 }, // New York City
               end: { lat: 28.6139, lng: 77.209 }, // New Delhi
             },
             {
