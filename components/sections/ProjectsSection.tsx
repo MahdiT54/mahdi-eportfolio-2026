@@ -30,7 +30,7 @@ export async function ProjectsSection() {
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Featured Projects
           </h2>
-          <p className="text-xl text-muted-foreground">Some of my best work</p>
+          <p className="text-xl text-muted-foreground">Some of my work</p>
         </div>
 
         <div className="@container">
