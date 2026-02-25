@@ -1,5 +1,6 @@
 import "../globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Geist, Geist_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 import Script from "next/script";
 import { VisualEditing } from "next-sanity/visual-editing";
@@ -11,7 +12,6 @@ import SidebarToggle from "@/components/SidebarToggle";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { SanityLive } from "@/sanity/lib/live";
-import { Geist, Geist_Mono } from "next/font/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,9 +31,10 @@ export default async function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body 
-        className={`${geistSans.variable} ${GeistMono.variable} font-sans`}
-        suppressHydrationWarning>
+        <body
+          className={`${geistSans.variable} ${GeistMono.variable} font-sans`}
+          suppressHydrationWarning
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="system"

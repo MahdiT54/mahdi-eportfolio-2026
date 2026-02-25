@@ -102,7 +102,9 @@ export async function AboutSection() {
                   key={`${stat.label}-${idx}`}
                   className="@container/stat text-center"
                 >
-                  <div className="text-3xl @md/stat:text-4xl font-bold text-primary mb-2"> {/* component level responsiveness container queries*/}
+                  <div className="text-3xl @md/stat:text-4xl font-bold text-primary mb-2">
+                    {" "}
+                    {/* component level responsiveness container queries*/}
                     {stat.value}
                   </div>
                   <div className="text-xs @md/stat:text-sm text-muted-foreground">
