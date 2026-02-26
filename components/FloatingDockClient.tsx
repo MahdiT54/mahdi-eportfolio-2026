@@ -75,8 +75,8 @@ export function FloatingDockClient({ navItems }: FloatingDockClientProps) {
       <div
         className={`hidden md:block fixed z-[60] transition-all duration-300 pointer-events-none group/dock ${
           isSidebarOpen
-            ? "bottom-0 left-[calc(50%-var(--sidebar-width)/2)] -translate-x-1/2 pb-3"
-            : "bottom-4 md:left-4 md:translate-x-0 lg:left-1/2 lg:-translate-x-1/2"
+            ? "bottom-[env(safe-area-inset-bottom)] left-[calc(50%-var(--sidebar-width)/2)] -translate-x-1/2 pb-3"
+            : "bottom-[calc(1rem+env(safe-area-inset-bottom))] md:left-4 md:translate-x-0 lg:left-1/2 lg:-translate-x-1/2"
         }`}
       >
         <div className="flex items-center gap-2 px-3 py-2.5 rounded-xl md:rounded-2xl bg-white/20 dark:bg-black/30 hover:bg-white/30 dark:hover:bg-black/40 backdrop-blur-xl border border-white/30 dark:border-white/20 hover:border-white/40 dark:hover:border-white/30 shadow-[0_8px_32px_0_rgba(0,0,0,0.15)] dark:shadow-[0_8px_32px_0_rgba(0,0,0,0.5)] pointer-events-auto transition-all duration-300">
@@ -131,7 +131,7 @@ export function FloatingDockClient({ navItems }: FloatingDockClientProps) {
       </div>
 
       {/* Mobile: Hamburger menu button at top right */}
-      <div className="md:hidden fixed top-4 right-4 z-[60]">
+      <div className="md:hidden fixed top-4 right-4 z-40">
         <button
           type="button"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

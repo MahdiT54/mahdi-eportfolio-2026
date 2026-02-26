@@ -22,7 +22,7 @@ function SidebarToggle() {
     flex items-center justify-center`;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 group">
+    <div className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom))] right-6 z-50 group">
       {/* Animated rings */}
       <div className="absolute inset-0 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 opacity-20 blur-2xl animate-ping [animation-duration:2s]" />
       <div className="absolute inset-0 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 opacity-30 blur-xl animate-pulse [animation-duration:3s]" />
