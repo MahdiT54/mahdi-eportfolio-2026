@@ -52,7 +52,7 @@ export async function ServicesSection() {
     return (
       <div>
         {startingPrice && (
-          <span className="text-2xl font-bold text-primary">
+          <span className="text-xl sm:text-2xl font-bold text-primary">
             ${startingPrice.toLocaleString()}
             {priceType && priceTypeLabels[priceType]}
           </span>
