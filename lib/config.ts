@@ -4,10 +4,16 @@ import type {
   ThemeOption,
 } from "@openai/chatkit-react";
 
+export const CHATKIT_API_URL =
+  process.env.NEXT_PUBLIC_CHATKIT_API_URL?.trim() || "/api/chatkit";
+
+export const CHATKIT_DOMAIN_KEY =
+  process.env.NEXT_PUBLIC_CHATKIT_DOMAIN_KEY?.trim() ||
+  "domain_pk_localhost_dev";
+
+/** @deprecated Agent Builder workflow — no longer used after Agents SDK migration */
 export const WORKFLOW_ID =
   process.env.NEXT_PUBLIC_CHATKIT_WORKFLOW_ID?.trim() ?? "";
-
-export const CREATE_SESSION_ENDPOINT = "/api/create-session";
 
 export const STARTER_PROMPTS: StartScreenPrompt[] = [
   {
@@ -34,6 +40,4 @@ export const getThemeConfig = (theme: ColorScheme): ThemeOption => ({
     },
   },
   radius: "round",
-  // Add other theme options here
-  // chatkit.studio/playground to explore config options
 });
