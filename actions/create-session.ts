@@ -1,5 +1,10 @@
 "use server";
 
+/**
+ * @deprecated Replaced by `/api/chatkit` with the Agents SDK self-hosted backend.
+ * Kept temporarily for reference during the Agent Builder migration.
+ */
+
 import { auth } from "@clerk/nextjs/server";
 import { WORKFLOW_ID } from "@/lib/config";
 

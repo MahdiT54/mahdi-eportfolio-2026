@@ -1,8 +1,8 @@
 "use client";
 
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
-import { createSession } from "@/actions/create-session";
 import type { CHAT_PROFILE_QUERYResult } from "@/sanity.types";
+import { CHATKIT_API_URL, CHATKIT_DOMAIN_KEY } from "@/lib/config";
 import { useSidebar } from "../ui/sidebar";
 
 function Chat({ profile }: { profile: CHAT_PROFILE_QUERYResult | null }) {
@@ -13,7 +13,6 @@ function Chat({ profile }: { profile: CHAT_PROFILE_QUERYResult | null }) {
       return "Hi there! Ask me anything about my work, experience, or projects.";
     }
 
-    // The .filter(Boolean) removes all falsy values from the array, so if the firstName or lastName is not set, it will be removed
     const fullName = [profile.firstName, profile.lastName]
       .filter(Boolean)
       .join(" ");
@@ -23,11 +22,9 @@ function Chat({ profile }: { profile: CHAT_PROFILE_QUERYResult | null }) {
 
   const { control } = useChatKit({
     api: {
-      async getClientSecret() {
-        return createSession();
-      },
+      url: CHATKIT_API_URL,
+      domainKey: CHATKIT_DOMAIN_KEY,
     },
-    // chatkit.studio/playground to explore config options
     theme: {},
     header: {
       title: {
@@ -69,7 +66,7 @@ function Chat({ profile }: { profile: CHAT_PROFILE_QUERYResult | null }) {
     },
     composer: {
       attachments: {
-        enabled: true,
+        enabled: false,
       },
       models: [
         {
@@ -89,7 +86,6 @@ function Chat({ profile }: { profile: CHAT_PROFILE_QUERYResult | null }) {
         },
       ],
     },
-
     disclaimer: {
       text: "Disclaimer: This is my AI-powered twin. It may not be 100% accurate and should be verified for accuracy.",
     },
