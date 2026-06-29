@@ -1,15 +1,35 @@
-import { auth } from "@clerk/nextjs/server";
+// import { auth } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
+import { checkChatRateLimit } from "@/lib/chat/rate-limit";
 import { getPortfolioChatKitServer } from "@/lib/chat/portfolio-chatkit-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-export async function POST(request: Request) {
-  const { userId } = await auth();
+const GUEST_COOKIE = "chat_guest_id";
 
-  if (!userId) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+export async function POST(request: Request) {
+  const cookieStore = await cookies();
+  const guestId = cookieStore.get(GUEST_COOKIE)?.value;
+
+  if (!guestId) {
+    return Response.json({ error: "Guest ID not found" }, { status: 400 });
   }
+
+  const rateLimit = await checkChatRateLimit(guestId, request);
+  if (rateLimit.success) {
+    return Response.json(
+      { error: "Rate limit exceeded.  Try again later." },
+      {
+        status: 429,
+        headers: { "Retry-After": String(rateLimit.retryAfterSeconds) },
+      },
+    );
+  }
+
+  const userId = `guest_${guestId}`;
+  const server = getPortfolioChatKitServer();
+  const result = await server.process(body, { userId });
 
   if (!process.env.OPENAI_API_KEY) {
     return Response.json(
@@ -17,10 +37,6 @@ export async function POST(request: Request) {
       { status: 500 },
     );
   }
-
-  const body = await request.text();
-  const server = getPortfolioChatKitServer();
-  const result = await server.process(body, { userId });
 
   if (result.isStreaming) {
     const stream = new ReadableStream({
