@@ -28,6 +28,7 @@ export async function POST(request: Request) {
   }
 
   const userId = `guest_${guestId}`;
+  const body = await request.text();
   const server = getPortfolioChatKitServer();
   const result = await server.process(body, { userId });
 
