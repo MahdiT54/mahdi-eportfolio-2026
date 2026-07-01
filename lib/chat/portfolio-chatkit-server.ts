@@ -9,7 +9,7 @@ import {
   type UserMessageItem,
 } from "chatkit-node-backend-sdk";
 import { checkChatRateLimit } from "@/lib/chat/rate-limit";
-import { InMemoryChatStore } from "@/lib/chat/in-memory-store";
+import { RedisChatStore } from "@/lib/chat/redis-store";
 import {
   extractUserMessageText,
   parseConversationTone,
@@ -108,7 +108,7 @@ const globalForChatKit = globalThis as typeof globalThis & {
 export function getPortfolioChatKitServer(): PortfolioChatKitServer {
   if (!globalForChatKit.__portfolioChatKitServer) {
     globalForChatKit.__portfolioChatKitServer = new PortfolioChatKitServer(
-      new InMemoryChatStore(),
+      new RedisChatStore(),
     );
   }
   return globalForChatKit.__portfolioChatKitServer;

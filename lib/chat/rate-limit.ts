@@ -1,10 +1,9 @@
-import { Ratelimit } from "@upstash/ratelimit"; // upstash packages
-import { Redis } from "@upstash/redis";
+import { Ratelimit } from "@upstash/ratelimit";
+import { getChatStorePrefix, getRedis } from "@/lib/upstash";
 
-const redis = Redis.fromEnv(); // redis.fromEnv() will auto read env variables
+const redis = getRedis();
 
-const rateLimitPrefix = 
-    process.env.RATE_LIMIT_PREFIX?.trim() || "chat:dev";
+const rateLimitPrefix = getChatStorePrefix();
 
 const perGuest = new Ratelimit({
   redis, // same as redis: redis         (when key: val matches, it returns the val)
