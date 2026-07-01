@@ -1,18 +1,20 @@
-import { Ratelimit } from "@upstash/ratelimit";
+import { Ratelimit } from "@upstash/ratelimit"; // upstash packages
 import { Redis } from "@upstash/redis";
 
-const redis = Redis.fromEnv();
+const redis = Redis.fromEnv(); // redis.fromEnv() will auto read env variables
 
 const perGuest = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(20, "1 h"),
+  redis, // same as redis: redis         (when key: val matches, it returns the val)
+  limiter: Ratelimit.slidingWindow(15, "1 h"),
   prefix: "chat:guest",
-});
+  enableProtection: true,
+}); // check console.upstashio > data browser > rate limit > chat:guest & chat:ip =)
 
 const perIp = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(50, "1 h"),
+  limiter: Ratelimit.slidingWindow(30, "1 h"),
   prefix: "chat:ip",
+  enableProtection: true,
 });
 
 export function getClientIp(request: Request): string {

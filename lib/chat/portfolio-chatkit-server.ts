@@ -55,6 +55,7 @@ export class PortfolioChatKitServer extends ChatKitServer<ChatKitRequestContext>
           ],
         } satisfies AssistantMessageItem,
       } satisfies ThreadItemDoneEvent;
+      
       return;
     }
 
