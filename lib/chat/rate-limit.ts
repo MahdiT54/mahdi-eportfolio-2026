@@ -5,7 +5,7 @@ const redis = Redis.fromEnv();
 
 const perGuest = new Ratelimit({
   redis,
-  limiter: Ratelimit.slidingWindow(25, "1 h"),
+  limiter: Ratelimit.slidingWindow(20, "1 h"),
   prefix: "chat:guest",
 });
 
@@ -15,7 +15,7 @@ const perIp = new Ratelimit({
   prefix: "chat:ip",
 });
 
-function getClientIp(request: Request): string {
+export function getClientIp(request: Request): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
     request.headers.get("x-real-ip") ??
@@ -23,11 +23,14 @@ function getClientIp(request: Request): string {
   );
 }
 
-export async function checkChatRateLimit(guestId: string, request: Request) {
-  const [guest, ip] = await Promise.all([
-    perGuest.limit(guestId),
-    perIp.limit(getClientIp(request)),
-  ]);
+export async function checkChatRateLimit(guestId: string, clientIp: string) {
+  const guest = await perGuest.limit(guestId);
+
+  // On localhost, IP is often "unknown" — don't bucket all dev traffic together
+  const ip =
+    clientIp === "unknown"
+      ? { success: true, remaining: Infinity, reset: Date.now() }
+      : await perIp.limit(clientIp);
 
   if (!guest.success || !ip.success) {
     const retryAfterSeconds = Math.ceil(
@@ -35,5 +38,6 @@ export async function checkChatRateLimit(guestId: string, request: Request) {
     );
     return { success: false, retryAfterSeconds };
   }
+
   return { success: true, remaining: Math.min(guest.remaining, ip.remaining) };
 }

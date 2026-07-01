@@ -12,12 +12,19 @@ export async function POST(request: Request) {
   const cookieStore = await cookies();
   const guestId = cookieStore.get(GUEST_COOKIE)?.value;
 
+  if (!process.env.OPENAI_API_KEY) {
+    return Response.json(
+      { error: "OPENAI_API_KEY not configured" },
+      { status: 500 },
+    );
+  }
+
   if (!guestId) {
     return Response.json({ error: "Guest ID not found" }, { status: 400 });
   }
 
   const rateLimit = await checkChatRateLimit(guestId, request);
-  if (rateLimit.success) {
+  if (!rateLimit.success) {
     return Response.json(
       { error: "Rate limit exceeded.  Try again later." },
       {
@@ -31,13 +38,6 @@ export async function POST(request: Request) {
   const body = await request.text();
   const server = getPortfolioChatKitServer();
   const result = await server.process(body, { userId });
-
-  if (!process.env.OPENAI_API_KEY) {
-    return Response.json(
-      { error: "OPENAI_API_KEY not configured" },
-      { status: 500 },
-    );
-  }
 
   if (result.isStreaming) {
     const stream = new ReadableStream({
