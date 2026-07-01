@@ -1,12 +1,10 @@
 "use client";
 
-import { SignInButton, useUser } from "@clerk/nextjs";
 import { MessageSquare, Sparkles } from "lucide-react";
 import { useSidebar } from "./ui/sidebar";
 
 function SidebarToggle() {
   const { toggleSidebar, open, isMobile, openMobile } = useSidebar();
-  const { isSignedIn } = useUser();
 
   const isSidebarOpen = isMobile ? openMobile : open;
 
@@ -40,8 +38,6 @@ function SidebarToggle() {
         {/* Tooltip arrow */}
         <div className="absolute -bottom-1 right-6 w-2 h-2 rotate-45 bg-white/90 dark:bg-black/90 border-r border-b border-white/40 dark:border-white/20" />
       </div>
-
-      {isSignedIn ? (
         <button
           type="button"
           onClick={toggleSidebar}
@@ -50,17 +46,6 @@ function SidebarToggle() {
         >
           <MessageSquare className="h-7 w-7 text-white transition-transform group-hover:scale-110" />
         </button>
-      ) : (
-        <SignInButton mode="modal">
-          <button
-            type="button"
-            className={buttonStyles}
-            aria-label="Sign in to chat with AI Twin"
-          >
-            <MessageSquare className="h-7 w-7 text-white transition-transform group-hover:scale-110" />
-          </button>
-        </SignInButton>
-      )}
     </div>
   );
 }

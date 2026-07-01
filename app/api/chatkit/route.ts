@@ -1,16 +1,13 @@
-import { auth } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
+import { getClientIp } from "@/lib/chat/rate-limit";
 import { getPortfolioChatKitServer } from "@/lib/chat/portfolio-chatkit-server";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
+const GUEST_COOKIE = "chat_guest_id";
+
 export async function POST(request: Request) {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   if (!process.env.OPENAI_API_KEY) {
     return Response.json(
       { error: "OPENAI_API_KEY not configured" },
@@ -18,9 +15,19 @@ export async function POST(request: Request) {
     );
   }
 
+  const cookieStore = await cookies();
+  const guestId = cookieStore.get(GUEST_COOKIE)?.value;
+
+  if (!guestId) {
+    return Response.json({ error: "Guest ID not found" }, { status: 400 });
+  }
+
+  const userId = `guest_${guestId}`;
+  const clientIp = getClientIp(request);
   const body = await request.text();
+
   const server = getPortfolioChatKitServer();
-  const result = await server.process(body, { userId });
+  const result = await server.process(body, { userId, guestId, clientIp });
 
   if (result.isStreaming) {
     const stream = new ReadableStream({
