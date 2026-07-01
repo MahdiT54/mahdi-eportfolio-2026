@@ -16,21 +16,21 @@ const perGuest = new Ratelimit({
 const perIp = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(30, "1 h"),
-  prefix: "chat:ip",
+  prefix: `${rateLimitPrefix}:ip`,
   enableProtection: true,
 });
 
 const perGuestDaily = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(25, "24 h"),
-  prefix: "chat:guest:daily",
+  prefix: `${rateLimitPrefix}:guest:daily`,
   enableProtection: true,
 });
 
 const perIpDaily = new Ratelimit({
   redis,
   limiter: Ratelimit.slidingWindow(50, "24 h"),
-  prefix: "chat:ip:daily",
+  prefix: `${rateLimitPrefix}:ip:daily`,
   enableProtection: true,
 });
 
