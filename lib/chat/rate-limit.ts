@@ -3,10 +3,13 @@ import { Redis } from "@upstash/redis";
 
 const redis = Redis.fromEnv(); // redis.fromEnv() will auto read env variables
 
+const rateLimitPrefix = 
+    process.env.RATE_LIMIT_PREFIX?.trim() || "chat:dev";
+
 const perGuest = new Ratelimit({
   redis, // same as redis: redis         (when key: val matches, it returns the val)
   limiter: Ratelimit.slidingWindow(15, "1 h"),
-  prefix: "chat:guest",
+  prefix: `${rateLimitPrefix}:guest`,
   enableProtection: true,
 }); // check console.upstashio > data browser > rate limit > chat:guest & chat:ip =)
 
