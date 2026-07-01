@@ -1,6 +1,5 @@
 "use client";
 
-// import { useClerk, useUser } from "@clerk/nextjs";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import Link from "next/link";
 import { useState } from "react";
@@ -39,8 +38,6 @@ const getVisibleLinks = (links: DockLink[], maxItems: number) => {
 };
 
 export function FloatingDockClient({ navItems }: FloatingDockClientProps) {
-  // const { isSignedIn } = useUser();
-  // const { signOut } = useClerk();
   const { open, isMobile, openMobile } = useSidebar();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [desktopMoreMenuOpen, setDesktopMoreMenuOpen] = useState(false);

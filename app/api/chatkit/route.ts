@@ -1,4 +1,3 @@
-// import { auth } from "@clerk/nextjs/server";
 import { cookies } from "next/headers";
 import { getClientIp } from "@/lib/chat/rate-limit";
 import { getPortfolioChatKitServer } from "@/lib/chat/portfolio-chatkit-server";

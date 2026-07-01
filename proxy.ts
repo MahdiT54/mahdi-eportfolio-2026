@@ -1,10 +1,9 @@
-// import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const GUEST_COOKIE = "chat_guest_id";
 
-export default function middleware(request:NextRequest) {
+export default function middleware(request: NextRequest) {
   const response = NextResponse.next();
 
   if (!request.cookies.get(GUEST_COOKIE)?.value) {
@@ -19,8 +18,6 @@ export default function middleware(request:NextRequest) {
 
   return response;
 }
-
-// export default clerkMiddleware();
 
 export const config = {
   matcher: [

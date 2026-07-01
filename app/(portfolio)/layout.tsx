@@ -1,5 +1,4 @@
 import "../globals.css";
-// import { ClerkProvider } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import { draftMode } from "next/headers";
 import Script from "next/script";

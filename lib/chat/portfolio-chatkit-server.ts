@@ -14,7 +14,10 @@ import {
   extractUserMessageText,
   parseConversationTone,
 } from "@/lib/chat/message-utils";
-import { getPortfolioContextText } from "@/lib/chat/portfolio-context";
+import {
+  buildRateLimitMessage,
+  getPortfolioContextText,
+} from "@/lib/chat/portfolio-context";
 import { resolvePortfolioWorkflow } from "@/lib/chat/run-workflow";
 
 export type ChatKitRequestContext = {
@@ -37,7 +40,9 @@ export class PortfolioChatKitServer extends ChatKitServer<ChatKitRequestContext>
       context.clientIp,
     );
     if (!rateLimit.success) {
-      const minutes = Math.ceil(rateLimit.retryAfterSeconds / 60);
+      const message = await buildRateLimitMessage(
+        rateLimit.retryAfterSeconds ?? 3600,
+      );
 
       yield {
         type: "thread.item.done",
@@ -49,13 +54,13 @@ export class PortfolioChatKitServer extends ChatKitServer<ChatKitRequestContext>
           content: [
             {
               type: "output_text",
-              text: `You've reached the message limit for now. Please try again in about ${minutes} minute${minutes === 1 ? "" : "s"}.`,
+              text: message,
               annotations: [],
             },
           ],
         } satisfies AssistantMessageItem,
       } satisfies ThreadItemDoneEvent;
-      
+
       return;
     }
 

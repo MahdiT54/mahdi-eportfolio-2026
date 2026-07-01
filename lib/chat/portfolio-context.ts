@@ -1,8 +1,7 @@
-// fetch profile, experience, projects, skills, education, 
-// certifications, achievements from sanity and format them into a 
-// context object that can be used by the portfolio agent to answer questions 
+// fetch profile, experience, projects, skills, education,
+// certifications, achievements from sanity and format them into a
+// context object that can be used by the portfolio agent to answer questions
 // about the portfolio owner and their professional background
-
 
 import { defineQuery } from "next-sanity";
 import { client } from "@/sanity/lib/client";
@@ -185,8 +184,32 @@ export async function getPortfolioContextText(): Promise<string> {
     return cachedContext.text;
   }
 
-  const data = await client.fetch<PortfolioContextData>(PORTFOLIO_CONTEXT_QUERY);
+  const data = await client.fetch<PortfolioContextData>(
+    PORTFOLIO_CONTEXT_QUERY,
+  );
   const text = formatPortfolioContext(data);
   cachedContext = { text, fetchedAt: now };
   return text;
+}
+
+const PROFILE_CONTACT_QUERY = defineQuery(
+  `*[_id == "singleton-profile" && _type == "profile"][0]{ firstName, email }`,
+);
+
+export async function buildRateLimitMessage(
+  retryAfterSeconds: number,
+): Promise<string> {
+  const minutes = Math.max(1, Math.ceil(retryAfterSeconds / 60));
+  const minuteLabel = minutes === 1 ? "minute" : "minutes";
+
+  const profile = await client.fetch<{
+    firstName?: string | null;
+    email?: string | null;
+  }>(PROFILE_CONTACT_QUERY);
+
+  const contactLine = profile?.email
+    ? `If you still have questions, feel free to reach out to me directly at ${profile.email}.`
+    : "If you still have questions, feel free to reach out to me via email: mahditanzim2@gmail.com or on X: @MvhdiTanzim.";
+
+  return `You've reached the message limit for now. Please try again in about ${minutes} ${minuteLabel}. ${contactLine}`;
 }

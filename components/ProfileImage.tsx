@@ -1,5 +1,4 @@
 "use client";
-// import { useClerk, useUser } from "@clerk/nextjs";
 import { MessageCircle, X } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -18,8 +17,6 @@ export function ProfileImage({
 }: ProfileImageProps) {
   const [isHovered, setIsHovered] = useState(false);
   const { toggleSidebar, open } = useSidebar();
-  // const { isSignedIn } = useUser();
-  // const { openSignIn } = useClerk();
 
   return (
     <button
