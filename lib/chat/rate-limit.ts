@@ -17,6 +17,20 @@ const perIp = new Ratelimit({
   enableProtection: true,
 });
 
+const perGuestDaily = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(25, "24 h"),
+  prefix: "chat:guest:daily",
+  enableProtection: true,
+});
+
+const perIpDaily = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(50, "24 h"),
+  prefix: "chat:ip:daily",
+  enableProtection: true,
+});
+
 export function getClientIp(request: Request): string {
   return (
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
@@ -26,20 +40,32 @@ export function getClientIp(request: Request): string {
 }
 
 export async function checkChatRateLimit(guestId: string, clientIp: string) {
-  const guest = await perGuest.limit(guestId);
+  const [guestHour, guestDay] = await Promise.all([
+    perGuest.limit(guestId),
+    perGuestDaily.limit(guestId),
+  ]);
 
-  // On localhost, IP is often "unknown" — don't bucket all dev traffic together
-  const ip =
+  const ipHour =
     clientIp === "unknown"
       ? { success: true, remaining: Infinity, reset: Date.now() }
       : await perIp.limit(clientIp);
 
-  if (!guest.success || !ip.success) {
+  const ipDay =
+    clientIp === "unknown"
+      ? { success: true, remaining: Infinity, reset: Date.now() }
+      : await perIpDaily.limit(clientIp);
+
+  const checks = [guestHour, guestDay, ipHour, ipDay];
+
+  if (checks.some((c) => !c.success)) {
     const retryAfterSeconds = Math.ceil(
-      Math.max(guest.reset - Date.now(), ip.reset - Date.now()) / 1000,
+      Math.max(...checks.map((c) => c.reset - Date.now())) / 1000,
     );
     return { success: false, retryAfterSeconds };
   }
 
-  return { success: true, remaining: Math.min(guest.remaining, ip.remaining) };
+  return {
+    success: true,
+    remaining: Math.min(...checks.map((c) => c.remaining)),
+  };
 }
