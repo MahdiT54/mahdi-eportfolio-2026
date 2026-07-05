@@ -42,3 +42,6 @@ next-env.d.ts
 
 # clerk configuration (can include secrets)
 /.clerk/
+
+# local CV copy (updated frequently, keep out of the repo)
+/Mahdi_Tanzim_CV.pdf

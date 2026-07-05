@@ -35,10 +35,12 @@ export function SkillsChart({ skills }: SkillsChartProps) {
     groupedSkills.set(category, [...existing, skill]);
   }
 
+  // Ordered by current hiring market demand: AI tooling leads, then the
+  // core web stack, then supporting data/cloud/tooling skills.
   const CATEGORY_ORDER = [
+    "ai-ml",
     "frontend",
     "backend",
-    "ai-ml",
     "database",
     "cloud",
     "tools",
@@ -64,12 +66,14 @@ export function SkillsChart({ skills }: SkillsChartProps) {
           .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
           .join(" ");
 
-        // Prepare chart data and config
-        const chartData = categorySkills.map((skill) => ({
-          name: skill.name || "Unknown",
-          proficiency: skill.percentage || 0,
-          fill: skill.color || "var(--color-default)",
-        }));
+        // Strongest skills first within each category
+        const chartData = [...categorySkills]
+          .sort((a, b) => (b.percentage || 0) - (a.percentage || 0))
+          .map((skill) => ({
+            name: skill.name || "Unknown",
+            proficiency: skill.percentage || 0,
+            fill: skill.color || "var(--color-default)",
+          }));
 
         const chartConfig = {
           proficiency: {
