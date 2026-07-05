@@ -45,3 +45,4 @@ next-env.d.ts
 
 # local CV copy (updated frequently, keep out of the repo)
 /Mahdi_Tanzim_CV.pdf
+/cv/
