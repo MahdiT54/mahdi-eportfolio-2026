@@ -18,9 +18,9 @@ async function PortfolioContent() {
       <AboutSection />
       <TestimonialsSection />
       <SkillsSection />
+      <ProjectsSection />
       <ExperienceSection />
       <EducationSection />
-      <ProjectsSection />
       <CertificationsSection />
       <AchievementsSection />
       <ServicesSection />
