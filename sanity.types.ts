@@ -1308,7 +1308,7 @@ export type HERO_QUERYResult = {
 
 // Source: ./components/sections/ProjectsSection.tsx
 // Variable: SPOTLIGHT_QUERY
-// Query: *[_type == "project" && spotlight == true] | order(order asc)[0...3]{  title,  slug,  tagline,  description,  highlights,  category,  liveUrl,  githubUrl,  coverImage,  demoAction,  technologies[]->{name, category, color}}
+// Query: *[_type == "project" && spotlight == true] | order(order asc)[0...2]{  title,  slug,  tagline,  description,  highlights,  category,  liveUrl,  githubUrl,  coverImage,  demoAction,  technologies[]->{name, category, color}}
 export type SPOTLIGHT_QUERYResult = Array<{
   title: string | null;
   slug: Slug | null;
@@ -1578,7 +1578,7 @@ declare module "@sanity/client" {
     "*[_type == \"education\"] | order(endDate desc, startDate desc){\n  institution,\n  degree,\n  fieldOfStudy,\n  startDate,\n  endDate,\n  current,\n  gpa,\n  description,\n  achievements,\n  logo,\n  website,\n  order\n}": EDUCATION_QUERYResult;
     "*[_type == \"experience\"] | order(startDate desc){\n  company,\n  position,\n  employmentType,\n  location,\n  startDate,\n  endDate,\n  current,\n  description,\n  responsibilities,\n  achievements,\n  technologies[]->{name, category},\n  companyLogo,\n  companyWebsite\n}": EXPERIENCE_QUERYResult;
     "*[_id == \"singleton-profile\"][0]{\n    firstName,\n    lastName,\n    headline,\n    headlineStaticText,\n    headlineAnimatedWords,\n    headlineAnimationDuration,\n    shortBio,\n    email,\n    phone,\n    location,\n    availability,\n    socialLinks,\n    yearsOfExperience,\n    profileImage\n}": HERO_QUERYResult;
-    "*[_type == \"project\" && spotlight == true] | order(order asc)[0...3]{\n  title,\n  slug,\n  tagline,\n  description,\n  highlights,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  demoAction,\n  technologies[]->{name, category, color}\n}": SPOTLIGHT_QUERYResult;
+    "*[_type == \"project\" && spotlight == true] | order(order asc)[0...2]{\n  title,\n  slug,\n  tagline,\n  description,\n  highlights,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  demoAction,\n  technologies[]->{name, category, color}\n}": SPOTLIGHT_QUERYResult;
     "*[_type == \"project\" && featured == true && spotlight != true] | order(order asc)[0...6]{\n  title,\n  slug,\n  tagline,\n  description,\n  highlights,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  demoAction,\n  technologies[]->{name, category, color}\n}": FEATURED_QUERYResult;
     "*[_type == \"service\"] | order(order asc, _createdAt desc){\n  title,\n  slug,\n  icon,\n  shortDescription,\n  fullDescription,\n  features,\n  technologies[]->{name, category},\n  deliverables,\n  pricing,\n  timeline,\n  featured,\n  order\n}": SERVICES_QUERYResult;
     "*[_type == \"skill\" && !(category in [\"soft-skills\", \"mobile\", \"testing\", \"devops\", \"design\"])] | order(category asc, order asc){\n  name,\n  category,\n  proficiency,\n  percentage,\n  yearsOfExperience,\n  color\n}": SKILLS_QUERYResult;
