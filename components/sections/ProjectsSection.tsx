@@ -21,7 +21,7 @@ const PROJECT_FIELDS = `{
 }`;
 
 const SPOTLIGHT_QUERY = defineQuery(
-  `*[_type == "project" && spotlight == true] | order(order asc)[0...3]${PROJECT_FIELDS}`,
+  `*[_type == "project" && spotlight == true] | order(order asc)[0...2]${PROJECT_FIELDS}`,
 );
 
 const FEATURED_QUERY = defineQuery(
@@ -265,12 +265,12 @@ export async function ProjectsSection() {
                 In-Demand Features, Built In
               </h2>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Headless CMS, agentic AI chat, and a production-grade portfolio
-                stack — live on this site, not just slide-deck promises.
+                Headless CMS and agentic AI chat — live on this site, not just
+                slide-deck promises.
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
               {spotlightProjects.map((project) => (
                 <SpotlightCard
                   key={project.slug?.current || project.title}
