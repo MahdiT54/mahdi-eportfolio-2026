@@ -471,6 +471,14 @@ export type Project = {
   category?: "web-app" | "mobile-app" | "ai-ml" | "api-backend" | "devops" | "open-source" | "cli-tool" | "desktop-app" | "browser-extension" | "game" | "other";
   liveUrl?: string;
   githubUrl?: string;
+  description?: string;
+  highlights?: Array<string>;
+  demoAction?: {
+    label?: string;
+    type?: "external" | "open-chat" | "scroll";
+    target?: string;
+  };
+  spotlight?: boolean;
   featured?: boolean;
   order?: number;
 };
@@ -1299,12 +1307,14 @@ export type HERO_QUERYResult = {
 } | null;
 
 // Source: ./components/sections/ProjectsSection.tsx
-// Variable: PROJECTS_QUERY
-// Query: *[_type == "project" && featured == true] | order(order asc)[0...6]{  title,  slug,  tagline,  category,  liveUrl,  githubUrl,  coverImage,  technologies[]->{name, category, color}}
-export type PROJECTS_QUERYResult = Array<{
+// Variable: SPOTLIGHT_QUERY
+// Query: *[_type == "project" && spotlight == true] | order(order asc)[0...3]{  title,  slug,  tagline,  description,  highlights,  category,  liveUrl,  githubUrl,  coverImage,  demoAction,  technologies[]->{name, category, color}}
+export type SPOTLIGHT_QUERYResult = Array<{
   title: string | null;
   slug: Slug | null;
   tagline: string | null;
+  description: string | null;
+  highlights: Array<string> | null;
   category: "ai-ml" | "api-backend" | "browser-extension" | "cli-tool" | "desktop-app" | "devops" | "game" | "mobile-app" | "open-source" | "other" | "web-app" | null;
   liveUrl: string | null;
   githubUrl: string | null;
@@ -1320,6 +1330,46 @@ export type PROJECTS_QUERYResult = Array<{
     crop?: SanityImageCrop;
     alt?: string;
     _type: "image";
+  } | null;
+  demoAction: {
+    label?: string;
+    type?: "external" | "open-chat" | "scroll";
+    target?: string;
+  } | null;
+  technologies: Array<{
+    name: string | null;
+    category: "ai-ml" | "backend" | "cloud" | "database" | "design" | "devops" | "frontend" | "mobile" | "other" | "soft-skills" | "testing" | "tools" | null;
+    color: string | null;
+  }> | null;
+}>;
+// Variable: FEATURED_QUERY
+// Query: *[_type == "project" && featured == true && spotlight != true] | order(order asc)[0...6]{  title,  slug,  tagline,  description,  highlights,  category,  liveUrl,  githubUrl,  coverImage,  demoAction,  technologies[]->{name, category, color}}
+export type FEATURED_QUERYResult = Array<{
+  title: string | null;
+  slug: Slug | null;
+  tagline: string | null;
+  description: string | null;
+  highlights: Array<string> | null;
+  category: "ai-ml" | "api-backend" | "browser-extension" | "cli-tool" | "desktop-app" | "devops" | "game" | "mobile-app" | "open-source" | "other" | "web-app" | null;
+  liveUrl: string | null;
+  githubUrl: string | null;
+  coverImage: {
+    asset?: {
+      _ref: string;
+      _type: "reference";
+      _weak?: boolean;
+      [internalGroqTypeReferenceTo]?: "sanity.imageAsset";
+    };
+    media?: unknown;
+    hotspot?: SanityImageHotspot;
+    crop?: SanityImageCrop;
+    alt?: string;
+    _type: "image";
+  } | null;
+  demoAction: {
+    label?: string;
+    type?: "external" | "open-chat" | "scroll";
+    target?: string;
   } | null;
   technologies: Array<{
     name: string | null;
@@ -1431,6 +1481,89 @@ export type TESTIMONIALS_QUERYResult = Array<{
   linkedinUrl: string | null;
 }>;
 
+// Source: ./lib/chat/portfolio-context.ts
+// Variable: PORTFOLIO_CONTEXT_QUERY
+// Query: {  "profile": *[_id == "singleton-profile" && _type == "profile"][0]{    firstName,    lastName,    headline,    shortBio,    "fullBioText": pt::text(fullBio),    email,    phone,    location,    availability,    yearsOfExperience,    socialLinks  },  "experience": *[_type == "experience"] | order(startDate desc)[0...10]{    company,    position,    employmentType,    location,    startDate,    endDate,    current,    "descriptionText": pt::text(description),    responsibilities,    achievements,    "technologies": technologies[]->name  },  "projects": *[_type == "project" && featured == true] | order(order asc)[0...8]{    title,    tagline,    category,    liveUrl,    githubUrl,    "technologies": technologies[]->name  },  "skills": *[_type == "skill" && !(category in ["soft-skills", "mobile", "testing", "devops", "design"])] | order(category asc)[0...30]{    name,    category,    proficiency,    yearsOfExperience  },  "education": *[_type == "education"] | order(endDate desc)[0...5]{    institution,    degree,    fieldOfStudy,    startDate,    endDate,    current,    description  },  "certifications": *[_type == "certification"] | order(issueDate desc)[0...8]{    name,    issuer,    issueDate,    description  },  "achievements": *[_type == "achievement" && featured == true] | order(order asc)[0...6]{    title,    type,    issuer,    date,    description  }}
+export type PORTFOLIO_CONTEXT_QUERYResult = {
+  profile: {
+    firstName: string | null;
+    lastName: string | null;
+    headline: string | null;
+    shortBio: string | null;
+    fullBioText: string;
+    email: string | null;
+    phone: string | null;
+    location: string | null;
+    availability: "available" | "open" | "unavailable" | null;
+    yearsOfExperience: number | null;
+    socialLinks: {
+      github?: string;
+      linkedin?: string;
+      twitter?: string;
+      website?: string;
+      medium?: string;
+      devto?: string;
+      youtube?: string;
+      stackoverflow?: string;
+    } | null;
+  } | null;
+  experience: Array<{
+    company: string | null;
+    position: string | null;
+    employmentType: "contract" | "freelance" | "full-time" | "internship" | "part-time" | null;
+    location: string | null;
+    startDate: string | null;
+    endDate: string | null;
+    current: boolean | null;
+    descriptionText: string;
+    responsibilities: Array<string> | null;
+    achievements: Array<string> | null;
+    technologies: Array<string | null> | null;
+  }>;
+  projects: Array<{
+    title: string | null;
+    tagline: string | null;
+    category: "ai-ml" | "api-backend" | "browser-extension" | "cli-tool" | "desktop-app" | "devops" | "game" | "mobile-app" | "open-source" | "other" | "web-app" | null;
+    liveUrl: string | null;
+    githubUrl: string | null;
+    technologies: Array<string | null> | null;
+  }>;
+  skills: Array<{
+    name: string | null;
+    category: "ai-ml" | "backend" | "cloud" | "database" | "design" | "devops" | "frontend" | "mobile" | "other" | "soft-skills" | "testing" | "tools" | null;
+    proficiency: "advanced" | "beginner" | "expert" | "intermediate" | null;
+    yearsOfExperience: number | null;
+  }>;
+  education: Array<{
+    institution: string | null;
+    degree: string | null;
+    fieldOfStudy: string | null;
+    startDate: string | null;
+    endDate: string | null;
+    current: boolean | null;
+    description: string | null;
+  }>;
+  certifications: Array<{
+    name: string | null;
+    issuer: string | null;
+    issueDate: string | null;
+    description: string | null;
+  }>;
+  achievements: Array<{
+    title: string | null;
+    type: "award" | "hackathon" | "milestone" | "open-source" | "other" | "publication" | "recognition" | "speaking" | null;
+    issuer: string | null;
+    date: string | null;
+    description: string | null;
+  }>;
+};
+// Variable: PROFILE_CONTACT_QUERY
+// Query: *[_id == "singleton-profile" && _type == "profile"][0]{ firstName, email }
+export type PROFILE_CONTACT_QUERYResult = {
+  firstName: string | null;
+  email: string | null;
+} | null;
+
 // Query TypeMap
 import "@sanity/client";
 declare module "@sanity/client" {
@@ -1445,9 +1578,12 @@ declare module "@sanity/client" {
     "*[_type == \"education\"] | order(endDate desc, startDate desc){\n  institution,\n  degree,\n  fieldOfStudy,\n  startDate,\n  endDate,\n  current,\n  gpa,\n  description,\n  achievements,\n  logo,\n  website,\n  order\n}": EDUCATION_QUERYResult;
     "*[_type == \"experience\"] | order(startDate desc){\n  company,\n  position,\n  employmentType,\n  location,\n  startDate,\n  endDate,\n  current,\n  description,\n  responsibilities,\n  achievements,\n  technologies[]->{name, category},\n  companyLogo,\n  companyWebsite\n}": EXPERIENCE_QUERYResult;
     "*[_id == \"singleton-profile\"][0]{\n    firstName,\n    lastName,\n    headline,\n    headlineStaticText,\n    headlineAnimatedWords,\n    headlineAnimationDuration,\n    shortBio,\n    email,\n    phone,\n    location,\n    availability,\n    socialLinks,\n    yearsOfExperience,\n    profileImage\n}": HERO_QUERYResult;
-    "*[_type == \"project\" && featured == true] | order(order asc)[0...6]{\n  title,\n  slug,\n  tagline,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  technologies[]->{name, category, color}\n}": PROJECTS_QUERYResult;
+    "*[_type == \"project\" && spotlight == true] | order(order asc)[0...3]{\n  title,\n  slug,\n  tagline,\n  description,\n  highlights,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  demoAction,\n  technologies[]->{name, category, color}\n}": SPOTLIGHT_QUERYResult;
+    "*[_type == \"project\" && featured == true && spotlight != true] | order(order asc)[0...6]{\n  title,\n  slug,\n  tagline,\n  description,\n  highlights,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  demoAction,\n  technologies[]->{name, category, color}\n}": FEATURED_QUERYResult;
     "*[_type == \"service\"] | order(order asc, _createdAt desc){\n  title,\n  slug,\n  icon,\n  shortDescription,\n  fullDescription,\n  features,\n  technologies[]->{name, category},\n  deliverables,\n  pricing,\n  timeline,\n  featured,\n  order\n}": SERVICES_QUERYResult;
     "*[_type == \"skill\" && !(category in [\"soft-skills\", \"mobile\", \"testing\", \"devops\", \"design\"])] | order(category asc, order asc){\n  name,\n  category,\n  proficiency,\n  percentage,\n  yearsOfExperience,\n  color\n}": SKILLS_QUERYResult;
     "*[_type == \"testimonial\" && featured == true] | order(order asc){\n  name,\n  position,\n  company,\n  testimonial,\n  rating,\n  date,\n  avatar,\n  companyLogo,\n  linkedinUrl\n}": TESTIMONIALS_QUERYResult;
+    "{\n  \"profile\": *[_id == \"singleton-profile\" && _type == \"profile\"][0]{\n    firstName,\n    lastName,\n    headline,\n    shortBio,\n    \"fullBioText\": pt::text(fullBio),\n    email,\n    phone,\n    location,\n    availability,\n    yearsOfExperience,\n    socialLinks\n  },\n  \"experience\": *[_type == \"experience\"] | order(startDate desc)[0...10]{\n    company,\n    position,\n    employmentType,\n    location,\n    startDate,\n    endDate,\n    current,\n    \"descriptionText\": pt::text(description),\n    responsibilities,\n    achievements,\n    \"technologies\": technologies[]->name\n  },\n  \"projects\": *[_type == \"project\" && featured == true] | order(order asc)[0...8]{\n    title,\n    tagline,\n    category,\n    liveUrl,\n    githubUrl,\n    \"technologies\": technologies[]->name\n  },\n  \"skills\": *[_type == \"skill\" && !(category in [\"soft-skills\", \"mobile\", \"testing\", \"devops\", \"design\"])] | order(category asc)[0...30]{\n    name,\n    category,\n    proficiency,\n    yearsOfExperience\n  },\n  \"education\": *[_type == \"education\"] | order(endDate desc)[0...5]{\n    institution,\n    degree,\n    fieldOfStudy,\n    startDate,\n    endDate,\n    current,\n    description\n  },\n  \"certifications\": *[_type == \"certification\"] | order(issueDate desc)[0...8]{\n    name,\n    issuer,\n    issueDate,\n    description\n  },\n  \"achievements\": *[_type == \"achievement\" && featured == true] | order(order asc)[0...6]{\n    title,\n    type,\n    issuer,\n    date,\n    description\n  }\n}": PORTFOLIO_CONTEXT_QUERYResult;
+    "*[_id == \"singleton-profile\" && _type == \"profile\"][0]{ firstName, email }": PROFILE_CONTACT_QUERYResult;
   }
 }

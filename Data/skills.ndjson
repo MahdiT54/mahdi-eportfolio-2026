@@ -36,3 +36,5 @@
 {"_type":"skill","_id":"skill-leadership","name":"Technical Leadership","category":"soft-skills","proficiency":"advanced","percentage":85,"yearsOfExperience":5}
 {"_type":"skill","_id":"skill-communication","name":"Communication","category":"soft-skills","proficiency":"expert","percentage":90,"yearsOfExperience":8}
 {"_type":"skill","_id":"skill-problem-solving","name":"Problem Solving","category":"soft-skills","proficiency":"expert","percentage":95,"yearsOfExperience":8}
+{"_type":"skill","_id":"skill-sanity","name":"Sanity CMS","category":"tools","proficiency":"expert","percentage":90,"yearsOfExperience":2,"color":"#F03E2F"}
+{"_type":"skill","_id":"skill-chatkit","name":"OpenAI ChatKit","category":"ai-ml","proficiency":"advanced","percentage":88,"yearsOfExperience":1,"color":"#412991"}

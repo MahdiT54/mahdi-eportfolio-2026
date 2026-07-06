@@ -87,6 +87,59 @@ export default defineType({
       description: "Link to the GitHub repository",
     }),
     defineField({
+      name: "description",
+      title: "Description",
+      type: "text",
+      rows: 4,
+      description: "Case-study summary for spotlight cards",
+    }),
+    defineField({
+      name: "highlights",
+      title: "Key Highlights",
+      type: "array",
+      of: [{ type: "string" }],
+      description: "Bullet points for spotlight showcase cards",
+    }),
+    defineField({
+      name: "demoAction",
+      title: "Primary Demo Action",
+      type: "object",
+      description: "Interactive CTA — e.g. open AI chat or scroll to a section",
+      fields: [
+        defineField({
+          name: "label",
+          title: "Button Label",
+          type: "string",
+        }),
+        defineField({
+          name: "type",
+          title: "Action Type",
+          type: "string",
+          options: {
+            list: [
+              { title: "External URL", value: "external" },
+              { title: "Open AI Chat", value: "open-chat" },
+              { title: "Scroll to Section", value: "scroll" },
+            ],
+          },
+        }),
+        defineField({
+          name: "target",
+          title: "URL or Anchor",
+          type: "string",
+          description: "Full URL for external links, or anchor like #contact",
+        }),
+      ],
+    }),
+    defineField({
+      name: "spotlight",
+      title: "Spotlight Capability",
+      type: "boolean",
+      description:
+        "Priority showcase — in-demand platform features you want front and center",
+      initialValue: false,
+    }),
+    defineField({
       name: "featured",
       title: "Featured Project",
       type: "boolean",
@@ -108,11 +161,13 @@ export default defineType({
       media: "coverImage",
       category: "category",
       featured: "featured",
+      spotlight: "spotlight",
     },
     prepare(selection) {
-      const { title, media, category, featured } = selection;
+      const { title, media, category, featured, spotlight } = selection;
+      const prefix = spotlight ? "🔦" : featured ? "⭐" : "";
       return {
-        title: featured ? `⭐ ${title}` : title,
+        title: prefix ? `${prefix} ${title}` : title,
         subtitle: category || "Uncategorized",
         media: media,
       };
