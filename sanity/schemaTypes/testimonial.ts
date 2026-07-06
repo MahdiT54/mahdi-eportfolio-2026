@@ -1,5 +1,11 @@
 import { defineField, defineType } from "sanity";
 
+// Keeps every quote within roughly the same rendered height in the
+// testimonials carousel so the layout stays uniform across slides.
+const MAX_TESTIMONIAL_WORDS = 50;
+
+const countWords = (text: string) => text.trim().split(/\s+/).length;
+
 export default defineType({
   name: "testimonial",
   title: "Testimonials",
@@ -44,7 +50,15 @@ export default defineType({
       title: "Testimonial",
       type: "text",
       rows: 5,
-      validation: (Rule) => Rule.required(),
+      description: `Keep it under ${MAX_TESTIMONIAL_WORDS} words so the carousel height stays uniform.`,
+      validation: (Rule) =>
+        Rule.required().custom((text?: string) => {
+          if (!text) return true;
+          const words = countWords(text);
+          return words <= MAX_TESTIMONIAL_WORDS
+            ? true
+            : `Testimonial is ${words} words. Keep it under ${MAX_TESTIMONIAL_WORDS} to avoid overflowing the carousel.`;
+        }),
     }),
     defineField({
       name: "rating",

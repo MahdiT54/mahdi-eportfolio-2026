@@ -18,7 +18,7 @@ export function parseConversationTone(
 }
 
 const OPENER_PATTERN =
-  /^(hi|hello|hey|yo|sup|howdy|good\s+(morning|afternoon|evening)|what'?s\s+up)[!.?\s]*$/i;
+  /^(hi|hello|hey|yo|sup|howdy|good\s+(morning|afternoon|evening)|what'?s\s+up|nice\s+(site|portfolio|work)|this\s+is\s+(cool|awesome|great|nice))[!.?\s]*$/i;
 
 /** Short greetings and openers that should reach the AI twin, not the topic moderator. */
 export function isAllowedOpener(text: string): boolean {

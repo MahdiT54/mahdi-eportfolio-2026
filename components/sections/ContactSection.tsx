@@ -28,8 +28,8 @@ export async function ContactSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">Get In Touch</h2>
           <p className="text-xl text-muted-foreground">
-            Wherever you are in the world, let&apos;s work together on your next
-            project.
+            Have a project in mind? I&apos;m based in NYC and work with clients
+            anywhere. Tell me what you&apos;re building.
           </p>
         </div>
 

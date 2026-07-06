@@ -63,14 +63,16 @@ export async function resolvePortfolioWorkflow(
   ];
 
   const skipTopicFilter = isAllowedOpener(userText);
+  let verdict: "engage" | "redirect" | "block" = "engage";
 
   if (!skipTopicFilter) {
     const topicFilterResult = await run(topicFilterAgent, history);
-    const isAppropriate = topicFilterResult.finalOutput?.is_appropriate;
+    // Fail open: let the twin handle ambiguous cases rather than hard-blocking
+    verdict = topicFilterResult.finalOutput?.verdict ?? "engage";
+  }
 
-    if (isAppropriate !== true) {
-      return { agent: topicModeratorAgent, agentInput: history };
-    }
+  if (verdict === "block") {
+    return { agent: topicModeratorAgent, agentInput: history };
   }
 
   const { hasTripwire, safeText } = await runAndApplyGuardrails(userText);
@@ -81,7 +83,11 @@ export async function resolvePortfolioWorkflow(
   }
 
   return {
-    agent: createAiTwinAgent(portfolioContext, tone),
+    agent: createAiTwinAgent(
+      portfolioContext,
+      tone,
+      verdict === "redirect" ? "redirect" : "answer",
+    ),
     agentInput: scrubbedHistory,
   };
 }
