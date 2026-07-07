@@ -50,10 +50,10 @@ export const structure: StructureResolver = (S) =>
                 .child(S.documentTypeList("skill").title("Skills")),
 
               S.listItem()
-                .title("Services")
+                .title("Capabilities")
                 .icon(TagIcon)
                 .schemaType("service")
-                .child(S.documentTypeList("service").title("Services")),
+                .child(S.documentTypeList("service").title("Capabilities")),
             ]),
         ),
 

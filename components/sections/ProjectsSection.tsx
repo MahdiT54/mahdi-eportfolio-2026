@@ -114,7 +114,7 @@ function ProjectActions({ project }: { project: Project }) {
           rel="noopener noreferrer"
           className="flex-1 min-w-[140px] text-center px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors text-sm"
         >
-          Live Demo
+          Try FeedPilot
         </Link>
       ) : null}
       {project.githubUrl && (

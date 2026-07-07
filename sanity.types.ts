@@ -188,6 +188,12 @@ export type Service = {
     [internalGroqTypeReferenceTo]?: "skill";
   }>;
   deliverables?: Array<string>;
+  proofProject?: {
+    _ref: string;
+    _type: "reference";
+    _weak?: boolean;
+    [internalGroqTypeReferenceTo]?: "project";
+  };
   pricing?: {
     startingPrice?: number;
     priceType?: "hourly" | "project" | "monthly" | "custom";
@@ -1379,9 +1385,9 @@ export type FEATURED_QUERYResult = Array<{
 }>;
 
 // Source: ./components/sections/ServicesSection.tsx
-// Variable: SERVICES_QUERY
-// Query: *[_type == "service"] | order(order asc, _createdAt desc){  title,  slug,  icon,  shortDescription,  fullDescription,  features,  technologies[]->{name, category},  deliverables,  pricing,  timeline,  featured,  order}
-export type SERVICES_QUERYResult = Array<{
+// Variable: CAPABILITIES_QUERY
+// Query: *[_type == "service"] | order(order asc, _createdAt desc){  title,  slug,  icon,  shortDescription,  fullDescription,  features,  technologies[]->{name, category},  deliverables,  featured,  order,  proofProject->{    title,    slug,    demoAction  }}
+export type CAPABILITIES_QUERYResult = Array<{
   title: string | null;
   slug: Slug | null;
   icon: {
@@ -1421,15 +1427,37 @@ export type SERVICES_QUERYResult = Array<{
     category: "ai-ml" | "backend" | "cloud" | "database" | "design" | "devops" | "frontend" | "mobile" | "other" | "soft-skills" | "testing" | "tools" | null;
   }> | null;
   deliverables: Array<string> | null;
-  pricing: {
-    startingPrice?: number;
-    priceType?: "custom" | "hourly" | "monthly" | "project";
-    description?: string;
-  } | null;
-  timeline: string | null;
   featured: boolean | null;
   order: number | null;
+  proofProject: {
+    title: string | null;
+    slug: Slug | null;
+    demoAction: {
+      label?: string;
+      type?: "external" | "open-chat" | "scroll";
+      target?: string;
+    } | null;
+  } | null;
 }>;
+// Variable: CAPABILITIES_PROFILE_QUERY
+// Query: *[_id == "singleton-profile"][0]{  availability,  location,  yearsOfExperience}
+export type CAPABILITIES_PROFILE_QUERYResult = {
+  availability: null;
+  location: null;
+  yearsOfExperience: null;
+} | {
+  availability: null;
+  location: null;
+  yearsOfExperience: number | null;
+} | {
+  availability: null;
+  location: string | null;
+  yearsOfExperience: null;
+} | {
+  availability: "available" | "open" | "unavailable" | null;
+  location: string | null;
+  yearsOfExperience: number | null;
+} | null;
 
 // Source: ./components/sections/SkillsSection.tsx
 // Variable: SKILLS_QUERY
@@ -1580,7 +1608,8 @@ declare module "@sanity/client" {
     "*[_id == \"singleton-profile\"][0]{\n    firstName,\n    lastName,\n    headline,\n    headlineStaticText,\n    headlineAnimatedWords,\n    headlineAnimationDuration,\n    shortBio,\n    email,\n    phone,\n    location,\n    availability,\n    socialLinks,\n    yearsOfExperience,\n    profileImage\n}": HERO_QUERYResult;
     "*[_type == \"project\" && spotlight == true] | order(order asc)[0...2]{\n  title,\n  slug,\n  tagline,\n  description,\n  highlights,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  demoAction,\n  technologies[]->{name, category, color}\n}": SPOTLIGHT_QUERYResult;
     "*[_type == \"project\" && featured == true && spotlight != true] | order(order asc)[0...6]{\n  title,\n  slug,\n  tagline,\n  description,\n  highlights,\n  category,\n  liveUrl,\n  githubUrl,\n  coverImage,\n  demoAction,\n  technologies[]->{name, category, color}\n}": FEATURED_QUERYResult;
-    "*[_type == \"service\"] | order(order asc, _createdAt desc){\n  title,\n  slug,\n  icon,\n  shortDescription,\n  fullDescription,\n  features,\n  technologies[]->{name, category},\n  deliverables,\n  pricing,\n  timeline,\n  featured,\n  order\n}": SERVICES_QUERYResult;
+    "*[_type == \"service\"] | order(order asc, _createdAt desc){\n  title,\n  slug,\n  icon,\n  shortDescription,\n  fullDescription,\n  features,\n  technologies[]->{name, category},\n  deliverables,\n  featured,\n  order,\n  proofProject->{\n    title,\n    slug,\n    demoAction\n  }\n}": CAPABILITIES_QUERYResult;
+    "*[_id == \"singleton-profile\"][0]{\n  availability,\n  location,\n  yearsOfExperience\n}": CAPABILITIES_PROFILE_QUERYResult;
     "*[_type == \"skill\" && !(category in [\"soft-skills\", \"mobile\", \"testing\", \"devops\", \"design\"])] | order(category asc, order asc){\n  name,\n  category,\n  proficiency,\n  percentage,\n  yearsOfExperience,\n  color\n}": SKILLS_QUERYResult;
     "*[_type == \"testimonial\" && featured == true] | order(order asc){\n  name,\n  position,\n  company,\n  testimonial,\n  rating,\n  date,\n  avatar,\n  companyLogo,\n  linkedinUrl\n}": TESTIMONIALS_QUERYResult;
     "{\n  \"profile\": *[_id == \"singleton-profile\" && _type == \"profile\"][0]{\n    firstName,\n    lastName,\n    headline,\n    shortBio,\n    \"fullBioText\": pt::text(fullBio),\n    email,\n    phone,\n    location,\n    availability,\n    yearsOfExperience,\n    socialLinks\n  },\n  \"experience\": *[_type == \"experience\"] | order(startDate desc)[0...10]{\n    company,\n    position,\n    employmentType,\n    location,\n    startDate,\n    endDate,\n    current,\n    \"descriptionText\": pt::text(description),\n    responsibilities,\n    achievements,\n    \"technologies\": technologies[]->name\n  },\n  \"projects\": *[_type == \"project\" && featured == true] | order(order asc)[0...8]{\n    title,\n    tagline,\n    category,\n    liveUrl,\n    githubUrl,\n    \"technologies\": technologies[]->name\n  },\n  \"skills\": *[_type == \"skill\" && !(category in [\"soft-skills\", \"mobile\", \"testing\", \"devops\", \"design\"])] | order(category asc)[0...30]{\n    name,\n    category,\n    proficiency,\n    yearsOfExperience\n  },\n  \"education\": *[_type == \"education\"] | order(endDate desc)[0...5]{\n    institution,\n    degree,\n    fieldOfStudy,\n    startDate,\n    endDate,\n    current,\n    description\n  },\n  \"certifications\": *[_type == \"certification\"] | order(issueDate desc)[0...8]{\n    name,\n    issuer,\n    issueDate,\n    description\n  },\n  \"achievements\": *[_type == \"achievement\" && featured == true] | order(order asc)[0...6]{\n    title,\n    type,\n    issuer,\n    date,\n    description\n  }\n}": PORTFOLIO_CONTEXT_QUERYResult;

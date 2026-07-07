@@ -2,12 +2,12 @@ import { defineField, defineType } from "sanity";
 
 export default defineType({
   name: "service",
-  title: "Services",
+  title: "Capabilities",
   type: "document",
   fields: [
     defineField({
       name: "title",
-      title: "Service Title",
+      title: "Capability Title",
       type: "string",
       validation: (Rule) => Rule.required(),
     }),
@@ -28,29 +28,29 @@ export default defineType({
       options: {
         hotspot: true,
       },
-      description: "Icon or illustration representing the service",
+      description: "Optional icon or illustration for this capability",
     }),
     defineField({
       name: "shortDescription",
       title: "Short Description",
       type: "text",
       rows: 2,
-      description: "Brief one-liner",
-      validation: (Rule) => Rule.max(150),
+      description: "One-line value proposition",
+      validation: (Rule) => Rule.max(200),
     }),
     defineField({
       name: "fullDescription",
       title: "Full Description",
       type: "array",
       of: [{ type: "block" }],
-      description: "Detailed description of the service",
+      description: "Expanded narrative about this capability area",
     }),
     defineField({
       name: "features",
-      title: "Key Features",
+      title: "What I'd Own",
       type: "array",
       of: [{ type: "string" }],
-      description: "Bullet points of what's included",
+      description: "Problems and responsibilities you'd own on a team",
     }),
     defineField({
       name: "technologies",
@@ -60,15 +60,23 @@ export default defineType({
     }),
     defineField({
       name: "deliverables",
-      title: "Deliverables",
+      title: "Artifacts I Produce",
       type: "array",
       of: [{ type: "string" }],
-      description: "What clients receive",
+      description: "Concrete outputs you ship in this area",
+    }),
+    defineField({
+      name: "proofProject",
+      title: "Proof Project",
+      type: "reference",
+      to: [{ type: "project" }],
+      description: "A project that demonstrates this capability",
     }),
     defineField({
       name: "pricing",
-      title: "Pricing",
+      title: "Pricing (legacy)",
       type: "object",
+      hidden: true,
       fields: [
         {
           name: "startingPrice",
@@ -98,14 +106,15 @@ export default defineType({
     }),
     defineField({
       name: "timeline",
-      title: "Typical Timeline",
+      title: "Typical Timeline (legacy)",
       type: "string",
-      description: "E.g., '2-4 weeks', '1-3 months'",
+      hidden: true,
     }),
     defineField({
       name: "featured",
-      title: "Featured Service",
+      title: "Core Strength",
       type: "boolean",
+      description: "Highlight as a primary capability (shown in featured grid)",
       initialValue: false,
     }),
     defineField({
@@ -120,11 +129,14 @@ export default defineType({
       title: "title",
       media: "icon",
       featured: "featured",
+      proofTitle: "proofProject.title",
     },
     prepare(selection) {
-      const { title, media, featured } = selection;
+      const { title, media, featured, proofTitle } = selection;
+      const subtitle = proofTitle ? `Proof: ${proofTitle}` : undefined;
       return {
         title: featured ? `⭐ ${title}` : title,
+        subtitle,
         media: media,
       };
     },

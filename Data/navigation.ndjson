@@ -3,7 +3,7 @@
 {"_type":"navigation","_id":"nav-3","title":"Experience","href":"#experience","icon":"IconBriefcase","isExternal":false,"order":3}
 {"_type":"navigation","_id":"nav-4","title":"Projects","href":"#projects","icon":"IconCode","isExternal":false,"order":4}
 {"_type":"navigation","_id":"nav-5","title":"Skills","href":"#skills","icon":"IconBulb","isExternal":false,"order":5}
-{"_type":"navigation","_id":"nav-6","title":"Services","href":"#services","icon":"IconTools","isExternal":false,"order":6}
+{"_type":"navigation","_id":"nav-6","title":"Capabilities","href":"#services","icon":"IconTools","isExternal":false,"order":6}
 {"_type":"navigation","_id":"nav-7","title":"Education","href":"#education","icon":"IconSchool","isExternal":false,"order":7}
 {"_type":"navigation","_id":"nav-8","title":"Certifications","href":"#certifications","icon":"IconCertificate","isExternal":false,"order":8}
 {"_type":"navigation","_id":"nav-9","title":"Achievements","href":"#achievements","icon":"IconTrophy","isExternal":false,"order":9}
