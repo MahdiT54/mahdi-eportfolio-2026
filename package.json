@@ -8,10 +8,11 @@
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "typegen": "sanity schema extract && sanity typegen generate"
+    "typegen": "sanity schema extract && sanity typegen generate",
+    "test:chat": "node --test tests/chatkit-stream.test.mjs"
   },
   "dependencies": {
-    "@openai/agents": "^0.3.9",
+    "@openai/agents": "0.22.0",
     "@openai/chatkit": "^1.7.0",
     "@openai/chatkit-react": "^1.5.0",
     "@openai/guardrails": "^0.2.1",
@@ -32,7 +33,7 @@
     "next": "16.1.6",
     "next-sanity": "^11.6.12",
     "next-themes": "^0.4.6",
-    "openai": "^6.42.0",
+    "openai": "^7.57.0",
     "radix-ui": "^1.4.3",
     "react": "19.2.3",
     "react-dom": "19.2.3",
@@ -40,7 +41,7 @@
     "sanity": "^4.22.0",
     "styled-components": "^6.3.9",
     "tailwind-merge": "^3.4.1",
-    "zod": "^3.25.76"
+    "zod": "^4.6.6"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
@@ -53,5 +54,11 @@
     "tailwindcss": "^4.1.18",
     "tw-animate-css": "^1.4.0",
     "typescript": "^5.9.3"
+  },
+  "pnpm": {
+    "overrides": {
+      "chatkit-node-backend-sdk>@openai/agents": "0.22.0",
+      "chatkit-node-backend-sdk>zod": "$zod"
+    }
   }
 }
