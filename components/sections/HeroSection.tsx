@@ -35,7 +35,10 @@ async function HeroSection() {
       id="home"
       className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden bg-[url('/blackboard.jpeg')] bg-cover bg-center"
     >
-      <div className="absolute inset-0 bg-black/50" />
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-white/75 dark:bg-black/50"
+      />
       <BackgroundRippleEffect />
       <div className="relative z-10 container mx-auto max-w-6xl">
         <div className="@container">
@@ -112,7 +115,6 @@ async function HeroSection() {
                     <span>{profile.location}</span>
                   </div>
                 )}
-                
               </div>
             </div>
 
